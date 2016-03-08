@@ -21,10 +21,4 @@ export default class MainScene extends Scene {
 
   }
 
-  // joinGame(data, ack) {
-  //   var player = RPC.emitter; // Client emitting the RPC
-  //   player.spawn();
-  //   ack({success: true});
-  // }
-
 }

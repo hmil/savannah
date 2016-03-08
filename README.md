@@ -1,5 +1,4 @@
-savannah-cli
-============
+# savannah-cli
 
 Command line interface for the savannah framework.
 
