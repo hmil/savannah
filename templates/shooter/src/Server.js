@@ -17,6 +17,7 @@ export default class extends Server {
   onClientConnect(client) {
     var player = this.scene.newEntityWithComponents([Player, Input]);
     client.addToScene(this.scene);
+    player.getComponent(Player).spawn();
     client.send('playerId', player.id);
   }
 
