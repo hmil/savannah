@@ -16,13 +16,7 @@ export default class Player extends Component {
     //this.pawn = PawnPrefab.create(this);
     Log.info('creating pawn');
     const pawn = this.scene.newEntityWithComponents([Transform, Pawn, Graphics, Physics, Input], this.entity);
-    this.pawn = pawn.getComponent(Pawn);
-  }
-
-  get attributesList() {
-    return {
-      pawn: Types.Component(Pawn)
-    };
+    this.createAttribute('pawn', pawn.getComponent(Pawn), Types.Component(Pawn));
   }
 
   spawn() {

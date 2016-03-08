@@ -5,8 +5,6 @@ import 'savannah/components/index.js';
 import Client from 'savannah/Client.js';
 import { Log } from 'savannah/Log.js';
 import game from 'savannah/Game.js';
-import MainScene from 'scenes/MainScene.js';
-import PlayerInput from 'components/PlayerInput.js';
 
 export default class extends Client {
   constructor() {

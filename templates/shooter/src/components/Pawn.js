@@ -21,10 +21,11 @@ export default class Pawn extends Component {
     this.ANGULAR_SPEED = 0.005;
     this.COOLDOWN = 100;
     this.lastFire = 0;
-    this.lives = 3;
     this.physics.radius = 6;
     // this.enableNetworking(); // This object's networkAttributes are replicated on the network
 
+    this.createAttribute('lives', 3, Types.Int);
+    
     if (game.playerId != this.entity.parent.id) {
       this.getComponent(Input).disable();
     }
@@ -103,12 +104,6 @@ export default class Pawn extends Component {
       this.physics.vx = (this.SPEED * Math.cos(this.transform.theta));
       this.physics.vy = (this.SPEED * Math.sin(this.transform.theta));
     }
-  }
-
-  get attributesList() {
-    return {
-      lives: Types.Int
-    };
   }
 
   hit(bullet) {
