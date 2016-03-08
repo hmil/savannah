@@ -1,10 +1,10 @@
-import { Log } from 'savannah/Log.js';
-import Scene from 'savannah/Scene.js';
-import ShapeSprite from 'savannah/components/ShapeSprite.js';
-import Transform from 'savannah/components/Transform.js';
-import Camera from 'savannah/components/Camera.js';
+import { Log } from 'core/Log.js';
+import Scene from 'core/Scene.js';
+import ShapeSprite from 'core/components/ShapeSprite.js';
+import Transform from 'core/components/Transform.js';
+import Camera from 'core/components/Camera.js';
 
-import BasicPhysics from 'savannah/systems/BasicPhysics.js';
+import BasicPhysics from 'core/systems/BasicPhysics.js';
 
 export default class MainScene extends Scene {
 

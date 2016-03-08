@@ -1,4 +1,4 @@
-import game from 'savannah/Game.js';
+import game from 'core/Game.js';
 
 import Bullet from './Bullet.js';
 import Pawn from './Pawn.js';

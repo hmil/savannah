@@ -1,6 +1,6 @@
 import Pawn from './Pawn.js';
-import Component from 'savannah/Component.js';
-import { Log } from 'savannah/Log.js';
+import Component from 'core/Component.js';
+import { Log } from 'core/Log.js';
 
 export default class Bullet extends Component {
 

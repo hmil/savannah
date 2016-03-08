@@ -1,4 +1,4 @@
-import game from 'savannah/Game.js';
+import game from 'core/Game.js';
 
 import MainScene from './MainScene.js';
 

@@ -1,9 +1,10 @@
 import 'scenes/index.js';
 import 'components/index.js';
-import 'savannah/components/index.js';
+import 'core/components/index.js';
 
-import game from 'savannah/Game.js';
-import Server from 'savannah/Server.js';
+import Input from 'core/components/Input.js';
+import game from 'core/Game.js';
+import Server from 'core/Server.js';
 import Player from 'components/Player.js';
 
 export default class extends Server {
@@ -14,7 +15,7 @@ export default class extends Server {
   }
 
   onClientConnect(client) {
-    var player = this.scene.newEntityWithComponents([Player]);
+    var player = this.scene.newEntityWithComponents([Player, Input]);
     client.addToScene(this.scene);
     client.send('playerId', player.id);
   }

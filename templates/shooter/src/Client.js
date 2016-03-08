@@ -1,10 +1,10 @@
 import 'scenes/index.js';
 import 'components/index.js';
-import 'savannah/components/index.js';
+import 'core/components/index.js';
 
-import Client from 'savannah/Client.js';
-import { Log } from 'savannah/Log.js';
-import game from 'savannah/Game.js';
+import Client from 'core/Client.js';
+import { Log } from 'core/Log.js';
+import game from 'core/Game.js';
 
 export default class extends Client {
   constructor() {

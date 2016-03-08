@@ -1,14 +1,15 @@
-import { Log } from 'savannah/Log.js';
-import Component from 'savannah/Component.js';
-import Types from 'savannah/Types.js';
-import ShapeSprite from 'savannah/components/ShapeSprite.js';
-import Transform from 'savannah/components/Transform.js';
-import Physics from 'savannah/components/Physics.js';
-import RPC from 'savannah/RPC.js';
-import Input from 'savannah/components/Input.js';
+import { Log } from 'core/Log.js';
+import Component from 'core/Component.js';
+import Types from 'core/Types.js';
+import ShapeSprite from 'core/components/ShapeSprite.js';
+import Transform from 'core/components/Transform.js';
+import Physics from 'core/components/Physics.js';
+import RPC from 'core/RPC.js';
+import Input from 'core/components/Input.js';
+import { Keycodes } from 'core/Keycodes.js';
 
 import Bullet from './Bullet.js';
-import game from 'savannah/Game.js';
+import game from 'core/Game.js';
 
 export default class Pawn extends Component {
 
@@ -25,7 +26,7 @@ export default class Pawn extends Component {
     // this.enableNetworking(); // This object's networkAttributes are replicated on the network
 
     this.createAttribute('lives', 3, Types.Int);
-    
+
     if (game.playerId != this.entity.parent.id) {
       this.getComponent(Input).disable();
     }
@@ -52,14 +53,7 @@ export default class Pawn extends Component {
   // Input events are client-side code only
   onKeyDown(evt) {
     switch (evt.which) {
-      // case Keycodes.J:
-      //   RPC.call(this.scene, 'joinGame', null, function(ack) {
-      //     if (ack.success) {
-      //       // Do stuff
-      //     }
-      //   });
-      //   break;
-      case 32:
+      case Keycodes.space:
         let bullet = this.fire();
         RPC.call(this, 'fire', null, function(ack) {
           // TODO: implement RPC ACK
