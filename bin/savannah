@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+
+'use strict';
+
+process.title = 'savannah';
+
+var program = require('commander');
+var pkg = require('../package.json');
+
+var commands = {};
+
+var newTask = require('../lib/newTask');
+var buildTask = require('../lib/buildTask');
+var runTask = require('../lib/runTask');
+
+program
+  .version(pkg.version);
+
+commands['new'] = program
+  .command('new <dest>')
+  .description('Creates a new project in destination folder')
+  .action(newTask);
+
+commands.build = program
+  .command('build')
+  .description('Builds the project')
+  .action(buildTask);
+
+commands.run = program
+  .command('run [directory]')
+  .description('Runs the project in [directory] or in the current directory if none was supplied.')
+  .action(runTask);
+
+commands.help = program
+  .command('help [cmd]')
+  .description('CHelps')
+  .action((env, cmd) => {
+    if (env == null) {
+      cmd.parent.help();
+    } else if (commands[env] == null) {
+      console.log("No such command: "+env);
+      cmd.parent.help();
+    } else {
+      commands[env].help();
+    }
+  });
+
+program
+  .command('*', {isDefault: true}, {noHelp: true})
+  .action((env) => {
+    program.help();
+  });
+
+program.parse(process.argv);

@@ -1,0 +1,20 @@
+{
+  "name": "savannah-cli",
+  "version": "0.0.1-SNAPSHOT",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "bin": {
+    "savannah": "bin/savannah"
+  },
+  "dependencies": {
+    "command-line-args": "^2.1.6",
+    "command-line-commands": "^0.1.2",
+    "commander": "^2.9.0",
+    "ncp": "^2.0.0"
+  }
+}
