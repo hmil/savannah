@@ -13,12 +13,28 @@ export default class Bullet extends Component {
   }
 
 
-  onCollision(other) {
-    const pawn = other.getComponent(Pawn);
-    if (pawn != null) {
-      pawn.hit(this);
+  onCollision(evt) {
+    const other = evt.other;
+    if (other == null) {
+      // If it collided with the wall:
+
+      // destroy the bullet...
+      this.destroy();
+
+      // ...or make it bounce like crazy!
+      // if (evt.vx !== 0) {
+      //   this.physics.vx = -this.physics.vx;
+      // } else if (evt.vy !== 0) {
+      //   this.physics.vy = -this.physics.vy;
+      // }
+    } else {
+      const pawn = other.getComponent(Pawn);
+      if (pawn != null) {
+        // If it collided with a pawn, hit the pawn and destroy the bullet
+        pawn.hit(this);
+        this.destroy();
+      }
     }
-    this.destroy();
   }
 
 }

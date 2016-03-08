@@ -4,7 +4,7 @@ import Physics from 'core/components/Physics.js';
 import Entity from 'core/Entity.js';
 import Types from 'core/Types.js';
 import { Log } from 'core/Log.js';
-import Graphics from 'core/components/Graphics.js';
+import Sprite from 'core/components/Sprite.js';
 import Input from 'core/components/Input.js';
 import game from 'core/Game.js';
 import { Keycodes } from 'core/Keycodes.js';
@@ -24,7 +24,7 @@ export default class Player extends Component {
 
   spawn() {
     if (this.pawn == null) {
-      this.pawn = this.scene.newEntityWithComponents([Transform, Pawn, Graphics, Physics, Input], this.entity).getComponent(Pawn);
+      this.pawn = this.scene.newEntityWithComponents([Transform, Pawn, Sprite, Physics, Input], this.entity).getComponent(Pawn);
       this.pawn.reset();
     }
   }
