@@ -20,7 +20,7 @@ export default class Pawn extends Component {
     this.BARREL_POS = 8;
     this.SPEED = 0.1;
     this.ANGULAR_SPEED = 0.005;
-    this.COOLDOWN = 100;
+    this.COOLDOWN = 200;
     this.lastFire = 0;
     this.physics.radius = 6;
     // this.enableNetworking(); // This object's networkAttributes are replicated on the network
