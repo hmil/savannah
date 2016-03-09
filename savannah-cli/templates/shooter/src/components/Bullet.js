@@ -1,11 +1,17 @@
 import Pawn from './Pawn.js';
 import Component from 'core/Component.js';
+import CircleShape from 'core/components/CircleShape.js';
 import { Log } from 'core/Log.js';
 
 export default class Bullet extends Component {
 
   onCreate() {
     this.physics.radius = 3;
+
+    const shape = this.getComponent(CircleShape);
+    shape.fillStyle = '#ff0';
+    shape.fill = true;
+    shape.radius = 1.5;
   }
 
   static get SPEED() {

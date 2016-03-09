@@ -9,5 +9,6 @@ export default {
   Float: 1,
   Array: 2,
   Object: 3,
-  String: 4
+  String: 4,
+  Boolean: 5
 };

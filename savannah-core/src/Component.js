@@ -1,7 +1,7 @@
 import { Log } from './Log.js';
 import Types from './Types.js';
 
-const EVENT_RX = /on[A-Z].*/;
+const EVENT_RX = /^on[A-Z].*/;
 
 export default class Component {
   constructor(entity, id) {
@@ -29,10 +29,6 @@ export default class Component {
     return this._id;
   }
 
-  get attributesList() {
-    return {};
-  }
-
   get eventHandlers() {
     return this._eventHandlers;
   }
@@ -43,7 +39,7 @@ export default class Component {
       const attrVal = this[attr];
       if (Types.isComponent(this.attributesList[attr])) {
         if (attrVal != null) {
-          attrs[attr] = attrVal.entity.id+"/"+attrVal.id;
+          attrs[attr] = attrVal.entity.id + '/' + attrVal.id;
         } else {
           attrs[attr] = null;
         }

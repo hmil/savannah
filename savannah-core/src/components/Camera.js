@@ -33,7 +33,7 @@ export default class Camera extends Component {
 
     gd.ctx.save();
     // TODO: Center camera
-    // gd.ctx.translate(this.transform.x - offsetX, this.transform.y - offsetY);
+    gd.ctx.translate(this.width / 2 - this.transform.x, this.height / 2 - this.transform.y);
 
     // Determine size factor
     var f = Math.max(gd.width/this.width, gd.height/this.height);

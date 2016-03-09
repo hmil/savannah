@@ -4,11 +4,12 @@ import Physics from 'core/components/Physics.js';
 import Entity from 'core/Entity.js';
 import Types from 'core/Types.js';
 import { Log } from 'core/Log.js';
-import Sprite from 'core/components/Sprite.js';
+import RawSprite from 'core/components/RawSprite.js';
 import Input from 'core/components/Input.js';
 import game from 'core/Game.js';
 import { Keycodes } from 'core/Keycodes.js';
 import RPC from 'core/RPC.js';
+import Camera from 'core/components/Camera.js';
 
 import Pawn from 'components/Pawn.js';
 
@@ -24,7 +25,7 @@ export default class Player extends Component {
 
   spawn() {
     if (this.pawn == null) {
-      this.pawn = this.scene.newEntityWithComponents([Transform, Pawn, Sprite, Physics, Input], this.entity).getComponent(Pawn);
+      this.pawn = this.scene.newEntityWithComponents([Transform, Pawn, RawSprite, Physics, Input/*, Camera*/], this.entity).getComponent(Pawn);
       this.pawn.reset();
     }
   }
