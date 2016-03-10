@@ -1,0 +1,9 @@
+{
+  "source": "savannah-core/src",
+  "destination": "./docs",
+  "index": "README.md",
+  "title": "Savannah documentation",
+  "manual": {
+    "tutorial": ["./manual/tutorial.md"]
+  }
+}
