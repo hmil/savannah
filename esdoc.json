@@ -3,6 +3,7 @@
   "destination": "./docs",
   "index": "README.md",
   "title": "Savannah documentation",
+  "access": ["public", "protected", "private"],
   "manual": {
     "tutorial": ["./manual/tutorial.md"]
   }

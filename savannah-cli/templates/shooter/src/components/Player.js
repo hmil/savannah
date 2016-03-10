@@ -1,22 +1,17 @@
 import Component from 'core/Component.js';
-import Transform from 'core/components/Transform.js';
-import Physics from 'core/components/Physics.js';
-import Entity from 'core/Entity.js';
 import Types from 'core/Types.js';
-import { Log } from 'core/Log.js';
-import RawSprite from 'core/components/RawSprite.js';
 import Input from 'core/components/Input.js';
 import game from 'core/Game.js';
 import { Keycodes } from 'core/Keycodes.js';
 import RPC from 'core/RPC.js';
-import Camera from 'core/components/Camera.js';
+import { Pawn } from 'prefabs.js';
 
-import Pawn from 'components/Pawn.js';
+import PawnComp from 'components/Pawn.js';
 
 export default class Player extends Component {
 
   onCreate() {
-    this.createAttribute('pawn', null, Types.Component(Pawn));
+    this.createAttribute('pawn', null, Types.Component(PawnComp));
 
     if (game.playerId != this.entity.id) {
       this.getComponent(Input).disable();
@@ -25,7 +20,7 @@ export default class Player extends Component {
 
   spawn() {
     if (this.pawn == null) {
-      this.pawn = this.scene.newEntityWithComponents([Transform, Pawn, RawSprite, Physics, Input/*, Camera*/], this.entity).getComponent(Pawn);
+      this.pawn = this.scene.newPrefab(Pawn, this.entity).getComponent('Pawn');
       this.pawn.reset();
     }
   }

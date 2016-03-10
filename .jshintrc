@@ -3,6 +3,7 @@
   "eqnull": true,
   "quotmark": true,
   "undef": true,
+  "unused": true,
   "globals": {
     "console": true
   }

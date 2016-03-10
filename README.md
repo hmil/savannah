@@ -1,5 +1,8 @@
 # Savannah
 
-A wip nodejs-based game engine.
+A modern html5 game engine.
 
-See [savannah-cli](./savannah-cli) for usage doc.
+**Work in progress**
+
+To get started take a look at the [tutorial](http://hmil.github.io/savannah/docs/manual/tutorial.html),  
+then read the [API documentation](http://hmil.github.io/savannah/docs/identifiers.html)

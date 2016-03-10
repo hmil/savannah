@@ -1,5 +1,6 @@
 export default {
   Component: function(CType) {
+    if (typeof CType !== 'function') throw new Error('Type Component takes a component constructor as parameter');
     return CType.name;
   },
   isComponent: function(tpe) {
