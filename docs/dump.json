@@ -1,0 +1,6599 @@
+[
+  {
+    "__docId__": 0,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Client.js",
+    "memberof": null,
+    "longname": "src/Client.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from './Log.js';\nimport NetCodec from './NetCodec.js';\nimport game from './Game.js';\nimport RPC from './RPC.js';\n\n// For debugging purposes\n/* globals window */\nwindow.game = game;\n\n/* globals eio */\n\nexport default class Client {\n\n  connect() {\n    var socket = this._socket = new eio.Socket('ws://localhost:3000/');\n    this._codec = new NetCodec(socket);\n    this._codec.onClientMessage(this.onMessage, this);\n    socket.on('open', () => {\n      Log.info('Online!');\n      socket.on('close', () => {\n        Log.warn('Socket closed. TODO: handle this case.');\n        this.onDisconnect();\n      });\n\n      this._codec.setUpdateListener((data) => this.onUpdate(data));\n\n      // Invoke user hook\n      this.onConnect();\n    });\n    RPC.init(this._codec);\n  }\n\n  onConnect() { }\n\n  onDisconnect() { }\n\n  onMessage(type, data) {\n    switch(type) {\n      case 'createScene':\n        game.createScene(data.name, data.id);\n        break;\n      default:\n        Log.error(`Unknown message type: ${type}`);\n    }\n  }\n\n  onUpdate(data) {\n    for (let s of Object.keys(data)) {\n      let scene = game.scenes[s];\n      if (scene === undefined) {\n        Log.warn('Received update for inexisting scene');\n        continue;\n      }\n      scene.model.applySnapshot(data[s].snapshot);\n    }\n  }\n\n  send(type, data) {\n    this._codec.sendClientMessage(this._socket, type, data);\n  }\n}\n"
+  },
+  {
+    "__docId__": 1,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Client",
+    "memberof": "src/Client.js",
+    "longname": "src/Client.js~Client",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Client.js",
+    "importStyle": "Client",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 2,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "connect",
+    "memberof": "src/Client.js~Client",
+    "longname": "src/Client.js~Client#connect",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 3,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_codec",
+    "memberof": "src/Client.js~Client",
+    "longname": "src/Client.js~Client#_codec",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 4,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onConnect",
+    "memberof": "src/Client.js~Client",
+    "longname": "src/Client.js~Client#onConnect",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 5,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDisconnect",
+    "memberof": "src/Client.js~Client",
+    "longname": "src/Client.js~Client#onDisconnect",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 6,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onMessage",
+    "memberof": "src/Client.js~Client",
+    "longname": "src/Client.js~Client#onMessage",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "undocument": true,
+    "params": [
+      {
+        "name": "type",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 7,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/Client.js~Client",
+    "longname": "src/Client.js~Client#onUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 47,
+    "undocument": true,
+    "params": [
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 8,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "send",
+    "memberof": "src/Client.js~Client",
+    "longname": "src/Client.js~Client#send",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "undocument": true,
+    "params": [
+      {
+        "name": "type",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 9,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/ClientHandle.js",
+    "memberof": null,
+    "longname": "src/ClientHandle.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from './Log.js';\nimport NetCodec from './NetCodec.js';\nimport RPC from './RPC.js';\n\nexport default class ClientHandle {\n\n  constructor(socket) {\n    this._codec = new NetCodec(socket);\n    this._codec.onClientMessage(this.onClientMessage, this);\n    this._scenes = {};\n\n    // TODO: this works for inbound RPCs but not for outbound !\n    RPC.init(this._codec);\n  }\n\n  addToScene(scene) {\n    this._codec.sendClientMessage('createScene', {\n      name: scene.constructor.name,\n      id: scene.id\n    });\n    this._scenes[scene.id] = scene;\n  }\n\n  get scenes() {\n    return this._scenes;\n  }\n\n  send(type, data) {\n    this._codec.sendClientMessage(type, data);\n  }\n\n  onClientMessage() {\n\n  }\n\n  sendSnapshot(snapshot) {\n    this._codec.sendSnapshot(snapshot);\n  }\n\n  updateClient() {\n    var update = {};\n    for (let s of Object.keys(this.scenes)) {\n      update[s] = {\n        snapshot: this.scenes[s].model.takeSnapshot()\n      };\n    }\n    this._codec.sendUpdate(update);\n  }\n\n}\n"
+  },
+  {
+    "__docId__": 10,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ClientHandle",
+    "memberof": "src/ClientHandle.js",
+    "longname": "src/ClientHandle.js~ClientHandle",
+    "access": null,
+    "export": true,
+    "importPath": "./src/ClientHandle.js",
+    "importStyle": "ClientHandle",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 11,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "socket",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 12,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_codec",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#_codec",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 13,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scenes",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#_scenes",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 14,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addToScene",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#addToScene",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [
+      {
+        "name": "scene",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 15,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "scenes",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#scenes",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 16,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "send",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#send",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "params": [
+      {
+        "name": "type",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 17,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onClientMessage",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#onClientMessage",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 18,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "sendSnapshot",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#sendSnapshot",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "params": [
+      {
+        "name": "snapshot",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 19,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "updateClient",
+    "memberof": "src/ClientHandle.js~ClientHandle",
+    "longname": "src/ClientHandle.js~ClientHandle#updateClient",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 20,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Component.js",
+    "memberof": null,
+    "longname": "src/Component.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from './Log.js';\nimport Types from './Types.js';\n\nconst EVENT_RX = /^on[A-Z].*/;\n\nexport default class Component {\n  constructor(entity, id) {\n    this._entity = entity;\n    this._enabled = true;\n    this._id = id;\n    this._eventHandlers = {};\n    for (const f of Object.getOwnPropertyNames(Object.getPrototypeOf(this))) {\n      if (EVENT_RX.test(f)) {\n        this._eventHandlers[f.substr(2).toLowerCase()] = this[f].bind(this);\n      }\n    }\n    this._attributesList = {};\n  }\n\n  onCreate() {}\n  onDestroy() {}\n  onUpdate() {}\n\n  get enabled() {\n    return this._enabled;\n  }\n\n  get id() {\n    return this._id;\n  }\n\n  get eventHandlers() {\n    return this._eventHandlers;\n  }\n\n  get attributes() {\n    var attrs = {};\n    for (const attr of Object.keys(this.attributesList)) {\n      const attrVal = this[attr];\n      if (Types.isComponent(this.attributesList[attr])) {\n        if (attrVal != null) {\n          attrs[attr] = attrVal.entity.id + '/' + attrVal.id;\n        } else {\n          attrs[attr] = null;\n        }\n      } else {\n        attrs[attr] = attrVal;\n      }\n    }\n    return attrs;\n  }\n\n  get attributesList() {\n    return this._attributesList;\n  }\n\n  set attributes(attrs) {\n    for (const i of Object.keys(attrs)) {\n      this[i] = attrs[i];\n    }\n  }\n\n  _createComponentAttribute(name) {\n    const oldProp = this[name];\n    // Use the closure to store component and component id hidden from outside\n    var compId = null;\n    var entId = null;\n    var compRef = null;\n    Object.defineProperty(this, name, {\n      get: () => {\n        if (compRef === null) {\n          const entity = this.scene.model.getEntity(entId);\n          if (entity != null) {\n            compRef = entity.components[compId] || null;\n          }\n        } else if (compRef.entity.destroyed === true) {\n          compId = compRef = entId = null;\n        }\n        return compRef;\n      },\n      set: (comp) => {\n         if (typeof comp === 'string') {\n          var parts = comp.split('/');\n          entId = parts[0];\n          compId = parts[1];\n          compRef = null;\n        } else if (comp !== null && typeof comp === 'object') {\n          entId = comp.entity.id;\n          compId = comp.id;\n          compRef = comp;\n        } else {\n          compId = compRef = entId = null;\n        }\n      }\n    });\n    if (oldProp != null) {\n      this[name] = oldProp;\n    }\n  }\n\n  createAttribute(name, defaultVal, type) {\n    if (Types.isComponent(type)) {\n      this._createComponentAttribute(name);\n    } else if(typeof this[name] === 'undefined') {\n      this[name] = defaultVal;\n    }\n    this._attributesList[name] = type;\n  }\n\n  // subclass can override\n  get categories() {\n    return [];\n  }\n\n  get entity() {\n    return this._entity;\n  }\n\n  get scene() {\n    return this._entity.scene;\n  }\n\n  get transform() {\n    return this._entity.transform;\n  }\n\n  get physics() {\n    return this._entity.physics;\n  }\n\n  getComponent(Comp) {\n    return this._entity.getComponent(Comp);\n  }\n\n  destroy() {\n    this.entity.destroy();\n  }\n\n  disable() {\n    this._enabled = false;\n  }\n\n  enable() {\n    this._enabled = true;\n  }\n}\n"
+  },
+  {
+    "__docId__": 21,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "EVENT_RX",
+    "memberof": "src/Component.js",
+    "longname": "src/Component.js~EVENT_RX",
+    "access": null,
+    "export": false,
+    "importPath": "./src/Component.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "type": {
+      "types": [
+        "object"
+      ]
+    }
+  },
+  {
+    "__docId__": 22,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Component",
+    "memberof": "src/Component.js",
+    "longname": "src/Component.js~Component",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Component.js",
+    "importStyle": "Component",
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 23,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "entity",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "id",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 24,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_entity",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_entity",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 25,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_enabled",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_enabled",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 26,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_id",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_id",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 27,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_eventHandlers",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_eventHandlers",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 28,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_attributesList",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_attributesList",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 29,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 30,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDestroy",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#onDestroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 31,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#onUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 32,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "enabled",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#enabled",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 33,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "id",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#id",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 34,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "eventHandlers",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#eventHandlers",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 35,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "attributes",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#attributes",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 36,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "attributesList",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#attributesList",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 37,
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "attributes",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#attributes",
+    "access": null,
+    "description": null,
+    "lineNumber": 57,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 38,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_createComponentAttribute",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_createComponentAttribute",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 39,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createAttribute",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#createAttribute",
+    "access": null,
+    "description": null,
+    "lineNumber": 101,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "defaultVal",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "type",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 40,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "categories",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#categories",
+    "access": null,
+    "description": null,
+    "lineNumber": 111,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 41,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "entity",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#entity",
+    "access": null,
+    "description": null,
+    "lineNumber": 115,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 42,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "scene",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#scene",
+    "access": null,
+    "description": null,
+    "lineNumber": 119,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 43,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "transform",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#transform",
+    "access": null,
+    "description": null,
+    "lineNumber": 123,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 44,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "physics",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#physics",
+    "access": null,
+    "description": null,
+    "lineNumber": 127,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 45,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getComponent",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#getComponent",
+    "access": null,
+    "description": null,
+    "lineNumber": 131,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Comp",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 46,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "destroy",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#destroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 135,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 47,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "disable",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#disable",
+    "access": null,
+    "description": null,
+    "lineNumber": 139,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 48,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_enabled",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_enabled",
+    "access": null,
+    "description": null,
+    "lineNumber": 140,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 49,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "enable",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#enable",
+    "access": null,
+    "description": null,
+    "lineNumber": 143,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 50,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_enabled",
+    "memberof": "src/Component.js~Component",
+    "longname": "src/Component.js~Component#_enabled",
+    "access": null,
+    "description": null,
+    "lineNumber": 144,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Entity.js",
+    "memberof": null,
+    "longname": "src/Entity.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { uid } from './utils.js';\nimport { Log } from './Log.js';\nimport Physics from './components/Physics.js';\n\nexport default class Entity {\n\n  constructor(scene, id = null) {\n    this._components = {};\n    this._scene = scene;\n    this._parent = null;\n    this._parentId = null;\n    this._id = (id !== null) ? id : uid();\n    this._compIdCounter = 0;\n    this._isSynchronized = true;\n    this._transform = null;\n    this._handlers = {};\n    this._destroyed = false;\n  }\n\n  get parent() {\n    if (this._parent == null) {\n      this._parent = this.scene.model.getEntity(this._parentId);\n    }\n    return this._parent;\n  }\n\n  set parent(arg) {\n    if (typeof arg === 'string') {\n      this._parent = null;\n      this._parentId = arg;\n    } else if (arg !== null && typeof arg === 'object') {\n      var entity = arg.entity || entity; // Links to entity even if component is passed\n      this._parent = arg;\n      this._parentId = arg.id;\n    } else {\n      this._parent = null;\n      this._parentId = null;\n    }\n  }\n\n  get id() {\n    return this._id;\n  }\n\n  get components() {\n    return this._components;\n  }\n\n  get isSynchronized() {\n    return this._isSynchronized;\n  }\n\n  get scene() {\n    return this._scene;\n  }\n\n  get transform() {\n    return this._transform;\n  }\n\n  get physics() {\n    return this.getComponent(Physics);\n  }\n\n  get destroyed() {\n    return this._destroyed;\n  }\n\n  enableNetworking() {\n    this._isSynchronized = true;\n  }\n\n  disableNetworking() {\n    this._isSynchronized = false;\n  }\n\n  triggerEvent(evt, data) {\n    if (this._handlers[evt] != null) {\n      for (const h of this._handlers[evt]) {\n        h(data);\n      }\n    }\n  }\n\n  addComponent(Comp, id = null) {\n    var comp_id = (id == null) ? uid() : id;\n    var comp = new Comp(this, comp_id);\n    this._components[comp_id] = comp;\n    this._registerComponentHandlers(comp);\n\n    // Special case optimization for extremely common components\n    if (Comp.name === 'Transform') {\n      this._transform = comp;\n    }\n    return comp;\n  }\n\n  _registerComponentHandlers(comp) {\n    for (const evt of Object.keys(comp.eventHandlers)) {\n      this._addEventHandler(evt, comp.eventHandlers[evt]);\n    }\n  }\n\n  _addEventHandler(evt, fn) {\n    if (typeof this._handlers[evt] === 'undefined') {\n      this._handlers[evt] = [];\n    }\n    this._handlers[evt].push(fn);\n  }\n\n  addComponents(Comps) {\n    for (let Comp of Comps) {\n      this.addComponent(Comp);\n    }\n  }\n  \n  removeComponent(id) {\n    throw new Error('Removing components is not supported');\n    // Cannot remove component for now because we would need to remove associated event handlers\n\n    // const comp = this._components[id];\n    // if (comp === this._transform) {\n    //   this._transform = null;\n    // }\n    // delete this._components[id];\n  }\n\n  destroy() {\n    this._destroyed = true;\n  }\n\n  getComponent(Type) {\n    for (const i of Object.keys(this._components)) {\n      const comp = this._components[i];\n      if (comp.constructor.name === Type.name) {\n        return comp;\n      }\n    }\n  }\n\n  onCreate() {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      this._components[i].onCreate();\n    }\n  }\n\n  onDestroy() {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      this._components[i].onDestroy();\n    }\n  }\n\n\n  onUpdate(dt) {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      if (component.enabled) {\n        this._components[i].onUpdate(dt);\n      }\n    }\n  }\n}\n"
+  },
+  {
+    "__docId__": 52,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Entity",
+    "memberof": "src/Entity.js",
+    "longname": "src/Entity.js~Entity",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Entity.js",
+    "importStyle": "Entity",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 53,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "scene",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "id",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": null,
+        "defaultValue": "null"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 54,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_components",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_components",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 55,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scene",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_scene",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 56,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parent",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 57,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parentId",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parentId",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 58,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_id",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_id",
+    "access": null,
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 59,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_compIdCounter",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_compIdCounter",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 60,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_isSynchronized",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_isSynchronized",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 61,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_transform",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_transform",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 62,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_handlers",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_handlers",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 63,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_destroyed",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_destroyed",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 64,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "parent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#parent",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 65,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parent",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 66,
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "parent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#parent",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 67,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parent",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 68,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parentId",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parentId",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 69,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parent",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 70,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parentId",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parentId",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 71,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parent",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 72,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parentId",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_parentId",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 73,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "id",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#id",
+    "access": null,
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 74,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "components",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#components",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 75,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isSynchronized",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#isSynchronized",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 76,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "scene",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#scene",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 77,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "transform",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#transform",
+    "access": null,
+    "description": null,
+    "lineNumber": 57,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 78,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "physics",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#physics",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 79,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "destroyed",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#destroyed",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 80,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "enableNetworking",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#enableNetworking",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 81,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_isSynchronized",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_isSynchronized",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 82,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "disableNetworking",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#disableNetworking",
+    "access": null,
+    "description": null,
+    "lineNumber": 73,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 83,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_isSynchronized",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_isSynchronized",
+    "access": null,
+    "description": null,
+    "lineNumber": 74,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 84,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "triggerEvent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#triggerEvent",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "undocument": true,
+    "params": [
+      {
+        "name": "evt",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 85,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addComponent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#addComponent",
+    "access": null,
+    "description": null,
+    "lineNumber": 85,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Comp",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "id",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": null,
+        "defaultValue": "null"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 86,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_transform",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_transform",
+    "access": null,
+    "description": null,
+    "lineNumber": 93,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 87,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_registerComponentHandlers",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_registerComponentHandlers",
+    "access": null,
+    "description": null,
+    "lineNumber": 98,
+    "undocument": true,
+    "params": [
+      {
+        "name": "comp",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 88,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_addEventHandler",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_addEventHandler",
+    "access": null,
+    "description": null,
+    "lineNumber": 104,
+    "undocument": true,
+    "params": [
+      {
+        "name": "evt",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "fn",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 89,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addComponents",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#addComponents",
+    "access": null,
+    "description": null,
+    "lineNumber": 111,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Comps",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 90,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeComponent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#removeComponent",
+    "access": null,
+    "description": null,
+    "lineNumber": 117,
+    "undocument": true,
+    "params": [
+      {
+        "name": "id",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 91,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "destroy",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#destroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 128,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 92,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_destroyed",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#_destroyed",
+    "access": null,
+    "description": null,
+    "lineNumber": 129,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 93,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getComponent",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#getComponent",
+    "access": null,
+    "description": null,
+    "lineNumber": 132,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Type",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 94,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 141,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 95,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDestroy",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#onDestroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 148,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 96,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/Entity.js~Entity",
+    "longname": "src/Entity.js~Entity#onUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 156,
+    "undocument": true,
+    "params": [
+      {
+        "name": "dt",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 97,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Game.js",
+    "memberof": null,
+    "longname": "src/Game.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from './Log.js';\nimport Timer from './Timer.js';\n\nclass Game {\n\n  constructor() {\n    this._scenes = {};\n    this._activeScenes = {};\n    this._components = {};\n    this._timer = new Timer((dt) => this.update(dt));\n    this.playerId = null;\n  }\n\n  get scenes() {\n    return this._activeScenes;\n  }\n\n  getScene(id) {\n    return this._activeScenes[id];\n  }\n\n  get currentScene() {\n    var keys = Object.keys(this._activeScenes);\n    if (keys.length > 1) {\n      Log.warn('Game has multiple active scenes, picking the first one as \"current\"');\n    }\n    return (keys.length === 0) ? null : this._activeScenes[keys[0]];\n  }\n\n  registerScene(Scene) {\n    this._scenes[Scene.name] = Scene;\n  }\n\n  createScene(name, id = null) {\n    if (!this._scenes.hasOwnProperty(name)) {\n      throw new Error(`Scene ${name} is not registered. Use game.registerScene() before loading a scene`);\n    }\n    Log.info(`Creating scene ${name}`);\n    var scene = new this._scenes[name](id);\n    this._activeScenes[scene.id] = scene;\n    scene.onCreate();\n    return scene;\n  }\n\n  removeScene(name) {\n\n  }\n\n\n  registerComponent(Comp) {\n    if (Comp.name in this._components) {\n      throw new Error(`Trying to register two components with the same name: ${Comp.name}`);\n    }\n    this._components[Comp.name] = Comp;\n  }\n\n  getComponent(name) {\n    return this._components[name];\n  }\n\n  start() {\n    this._timer.start();\n  }\n\n  stop() {\n    this._timer.stop();\n  }\n\n  update(dt) {\n    for (let i of Object.keys(this._activeScenes)) {\n      this._activeScenes[i].onUpdate(dt);\n    }\n  }\n\n}\n\nexport default new Game();\n"
+  },
+  {
+    "__docId__": 98,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Game",
+    "memberof": "src/Game.js",
+    "longname": "src/Game.js~Game",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Game.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "pseudoExport": true,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 99,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 100,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scenes",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#_scenes",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 101,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_activeScenes",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#_activeScenes",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 102,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_components",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#_components",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 103,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_timer",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#_timer",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 104,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "playerId",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#playerId",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 105,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "scenes",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#scenes",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 106,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getScene",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#getScene",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "params": [
+      {
+        "name": "id",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 107,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "currentScene",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#currentScene",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 108,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "registerScene",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#registerScene",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Scene",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 109,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createScene",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#createScene",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "id",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": null,
+        "defaultValue": "null"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 110,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeScene",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#removeScene",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 111,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "registerComponent",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#registerComponent",
+    "access": null,
+    "description": null,
+    "lineNumber": 50,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Comp",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 112,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getComponent",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#getComponent",
+    "access": null,
+    "description": null,
+    "lineNumber": 57,
+    "undocument": true,
+    "params": [
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 113,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "start",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#start",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 114,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "stop",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#stop",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 115,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "update",
+    "memberof": "src/Game.js~Game",
+    "longname": "src/Game.js~Game#update",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "undocument": true,
+    "params": [
+      {
+        "name": "dt",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 116,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "game",
+    "memberof": "src/Game.js",
+    "longname": "src/Game.js~game",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Game.js",
+    "importStyle": "game",
+    "description": null,
+    "lineNumber": 77,
+    "undocument": true,
+    "type": {
+      "types": [
+        "src/Game.js~Game"
+      ]
+    }
+  },
+  {
+    "__docId__": 117,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/GameModel.js",
+    "memberof": null,
+    "longname": "src/GameModel.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Entity from './Entity.js';\nimport game from './Game.js';\nimport { Log } from './Log.js';\n\nexport default class GameModel {\n\n  constructor(scene) {\n    this._scene = scene;\n    this._entities = {};\n    this._targetState = null;\n  }\n\n  /*\n   * Inserts an entity into this model\n   */\n  addEntity(entity) {\n    this._entities[entity.id] = entity;\n  }\n\n  removeEntity(entity) {\n    delete this._entities[entity.id];\n  }\n\n  get entities() {\n    return this._entities;\n  }\n\n  getEntity(id) {\n    return this._entities[id] || null;\n  }\n\n  /*\n   * Returns a serializable representation of this model at this moment\n   */\n  takeSnapshot() {\n    const snap = {};\n    for (const i of Object.keys(this._entities)) {\n      const ent = this._entities[i];\n      if (!ent.isSynchronized) {\n        continue;\n      }\n      const serialized = {};\n      for (const key of Object.keys(ent.components)) {\n        const component = ent.components[key];\n        serialized[key] = {\n          name: component.constructor.name,\n          attrs: component.attributes\n        };\n      }\n      snap[ent.id] = {\n        parent: (ent.parent == null) ? null : ent.parent.id,\n        comps: serialized\n      };\n    }\n    return snap;\n  }\n\n  /*\n   * Updates this model using the provided diff\n   */\n  applyDiff(diff) {\n\n  }\n\n  /*\n   * Transforms this model into the model described by the snapshot while trying to\n   * reuse as much of the existing entities as possible\n   */\n  applySnapshot(snap) {\n    const oldEntities = this._entities;\n    this._entities = {};\n    const collectedComps = [];\n\n    const entitiesCreated = [];\n\n    // Update entities or create them if necessary\n    for (const i of Object.keys(snap)) {\n      let entity = null;\n      const snap_components = snap[i].comps;\n\n      if(i in oldEntities) {\n        entity = oldEntities[i];\n        delete oldEntities[i];\n      } else {\n        entity = new Entity(this._scene, i);\n        entitiesCreated.push(i);\n      }\n\n      const components = entity.components;\n\n      this._entities[i] = entity;\n\n      entity.parent = snap[i].parent;\n\n      // Recycle existing components and purge those which disappeared\n      for (const comp_id of Object.keys(components)) {\n        if (comp_id in snap_components) {\n          collectedComps.push(comp_id);\n        } else {\n          entity.removeComponent(comp_id);\n        }\n      }\n\n      // Create new components if needed\n      for (const comp_id of Object.keys(snap_components)) {\n        var comp = entity.components[comp_id];\n        if (comp == null) {\n          comp = entity.addComponent(game.getComponent(snap_components[comp_id].name), comp_id);\n        }\n        comp.attributes = snap_components[comp_id].attrs;\n      }\n\n      collectedComps.length = 0;\n    }\n\n    // Update components\n    // We do this in a second pass because of state consistency: i.e. we cannot update\n    // references if they point to something which does not exist yet.\n    // TODO: can we get rid of this loop?\n    for (const i of Object.keys(snap)) {\n      let entity = this._entities[i];\n      if (entitiesCreated.indexOf(i) >= 0) {\n        entity.onCreate();\n      }\n    }\n\n    // Remove other entities\n    for (const i of Object.keys(oldEntities)) {\n      oldEntities[i].onDestroy();\n    }\n  }\n\n\n  update(dt) {\n    // Logique:\n    //\n    // Si j'ai un target state (qui a été donné grace a un diff/snap) dont le timestamp est\n    // postérieur au timestamp local actuel, alors je regarde s'il existe des entities\n    // qui ne sont pas affectés par le target state (ie. ceux qui ont été créés localement\n    // et donc ne sont pas updatés par le serveur). Si c'est le cas, je simule ces entities.\n    // J'interpole les attributes pour les autres entities.\n    //\n    if (this._targetState === null) {\n      for (const i of Object.keys(this._entities)) {\n        this._entities[i].onUpdate(dt);\n      }\n    } else {\n      // TODO\n    }\n  }\n\n\n}\n"
+  },
+  {
+    "__docId__": 118,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "GameModel",
+    "memberof": "src/GameModel.js",
+    "longname": "src/GameModel.js~GameModel",
+    "access": null,
+    "export": true,
+    "importPath": "./src/GameModel.js",
+    "importStyle": "GameModel",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 119,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "scene",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 120,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scene",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#_scene",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 121,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_entities",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#_entities",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 122,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_targetState",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#_targetState",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 123,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addEntity",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#addEntity",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [
+      {
+        "name": "entity",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 124,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeEntity",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#removeEntity",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "params": [
+      {
+        "name": "entity",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 125,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "entities",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#entities",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 126,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getEntity",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#getEntity",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "params": [
+      {
+        "name": "id",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 127,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "takeSnapshot",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#takeSnapshot",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 128,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "applyDiff",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#applyDiff",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "undocument": true,
+    "params": [
+      {
+        "name": "diff",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 129,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "applySnapshot",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#applySnapshot",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "undocument": true,
+    "params": [
+      {
+        "name": "snap",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 130,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_entities",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#_entities",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 131,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "update",
+    "memberof": "src/GameModel.js~GameModel",
+    "longname": "src/GameModel.js~GameModel#update",
+    "access": null,
+    "description": null,
+    "lineNumber": 134,
+    "undocument": true,
+    "params": [
+      {
+        "name": "dt",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 132,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/History.js",
+    "memberof": null,
+    "longname": "src/History.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 3,
+    "content": "\n\nexport default class History {\n  \n}\n"
+  },
+  {
+    "__docId__": 133,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "History",
+    "memberof": "src/History.js",
+    "longname": "src/History.js~History",
+    "access": null,
+    "export": true,
+    "importPath": "./src/History.js",
+    "importStyle": "History",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 134,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Keycodes.js",
+    "memberof": null,
+    "longname": "src/Keycodes.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 4,
+    "content": "/**\n * From https://github.com/timoxley/keycode/blob/master/index.js\n */\nexport const Keycodes = {\n  'backspace': 8,\n  'tab': 9,\n  'enter': 13,\n  'shift': 16,\n  'ctrl': 17,\n  'alt': 18,\n  'pause/break': 19,\n  'caps lock': 20,\n  'esc': 27,\n  'space': 32,\n  'page up': 33,\n  'page down': 34,\n  'end': 35,\n  'home': 36,\n  'left': 37,\n  'up': 38,\n  'right': 39,\n  'down': 40,\n  'insert': 45,\n  'delete': 46,\n  'command': 91,\n  'right click': 93,\n  'numpad *': 106,\n  'numpad +': 107,\n  'numpad -': 109,\n  'numpad .': 110,\n  'numpad /': 111,\n  'num lock': 144,\n  'scroll lock': 145,\n  'my computer': 182,\n  'my calculator': 183,\n  ';': 186,\n  '=': 187,\n  ',': 188,\n  '-': 189,\n  '.': 190,\n  '/': 191,\n  '`': 192,\n  '[': 219,\n  '\\\\': 220,\n  ']': 221,\n  \"'\": 222\n}\n\n// Helper aliases\n\nexport const aliases = {\n  'windows': 91,\n  '⇧': 16,\n  '⌥': 18,\n  '⌃': 17,\n  '⌘': 91,\n  'ctl': 17,\n  'control': 17,\n  'option': 18,\n  'pause': 19,\n  'break': 19,\n  'caps': 20,\n  'return': 13,\n  'escape': 27,\n  'spc': 32,\n  'pgup': 33,\n  'pgdn': 33,\n  'ins': 45,\n  'del': 46,\n  'cmd': 91\n}\n\n\n/*!\n * Programatically add the following\n */\n\n// lower case chars\nfor (i = 97; i < 123; i++) Keycodes[String.fromCharCode(i)] = i - 32\n\n// numbers\nfor (var i = 48; i < 58; i++) Keycodes[i - 48] = i\n\n// function keys\nfor (i = 1; i < 13; i++) Keycodes['f'+i] = i + 111\n\n// numpad keys\nfor (i = 0; i < 10; i++) Keycodes['numpad '+i] = i + 96\n\n/**\n * Get by code\n *\n *   exports.name[13] // => 'Enter'\n */\n\nexport const Keynames = {} // title for backward compat\n\n// Create reverse mapping\nfor (i in Keycodes) Keynames[Keycodes[i]] = i\n\n// Add aliases\nfor (var alias in aliases) {\n  Keycodes[alias] = aliases[alias]\n}\n"
+  },
+  {
+    "__docId__": 135,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "Keycodes",
+    "memberof": "src/Keycodes.js",
+    "longname": "src/Keycodes.js~Keycodes",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Keycodes.js",
+    "importStyle": "{Keycodes}",
+    "description": "From https://github.com/timoxley/keycode/blob/master/index.js",
+    "lineNumber": 4,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 136,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "aliases",
+    "memberof": "src/Keycodes.js",
+    "longname": "src/Keycodes.js~aliases",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Keycodes.js",
+    "importStyle": "{aliases}",
+    "description": null,
+    "lineNumber": 51,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 137,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "Keynames",
+    "memberof": "src/Keycodes.js",
+    "longname": "src/Keycodes.js~Keynames",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Keycodes.js",
+    "importStyle": "{Keynames}",
+    "description": "Get by code\n\n  exports.name[13] // => 'Enter'",
+    "lineNumber": 96,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 138,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Log.js",
+    "memberof": null,
+    "longname": "src/Log.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 2,
+    "content": "\nclass DefaultBackend {\n  debug(msg) {\n    console.log('[debug] ' + msg);\n  }\n\n  info(msg) {\n    console.log('[info] ' + msg);\n  }\n\n  warn(msg) {\n    console.error('[warn] ' + msg);\n  }\n\n  error(msg) {\n    console.error('[err] ' + msg);\n  }\n}\n\n\n/**\n * Logging device.\n *\n * Display logging information using Log.info, Log.debug, Log.warn or Log.error\n * depending on the level of logging required.\n */\nexport const Log = {\n\n  _logger: new DefaultBackend(),\n\n  setBackend: (logger) => {\n    this._logger = logger;\n  },\n\n  /**\n   * Displays debug-level log.\n   * Debug level should be used for verbose informations.\n   *\n   * @param {String} msg message to display\n   */\n  debug: function(msg) {\n    this._logger.debug(msg);\n  },\n\n  /**\n   * Displays info-level log.\n   * Info level should be used for standard informations.\n   *\n   * @param {String} msg message to display\n   */\n  info: function(msg) {\n    this._logger.info(msg);\n  },\n\n  /**\n   * Displays warning-level log.\n   * Warning level should be used for potential threats or expected begnin errors.\n   *\n   * @param {String} msg message to display\n   */\n  warn: function(msg) {\n   this._logger.warn(msg);\n  },\n\n  /**\n   * Displays error-level log.\n   * Error level should be used for unexpected errors and failures.\n   *\n   * @param {String} msg message to display\n   */\n  error: function(msg) {\n    this._logger.error(msg);\n  }\n};\n"
+  },
+  {
+    "__docId__": 139,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "DefaultBackend",
+    "memberof": "src/Log.js",
+    "longname": "src/Log.js~DefaultBackend",
+    "access": null,
+    "export": false,
+    "importPath": "./src/Log.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 140,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "debug",
+    "memberof": "src/Log.js~DefaultBackend",
+    "longname": "src/Log.js~DefaultBackend#debug",
+    "access": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "params": [
+      {
+        "name": "msg",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 141,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "info",
+    "memberof": "src/Log.js~DefaultBackend",
+    "longname": "src/Log.js~DefaultBackend#info",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "msg",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 142,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "warn",
+    "memberof": "src/Log.js~DefaultBackend",
+    "longname": "src/Log.js~DefaultBackend#warn",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "msg",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 143,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "error",
+    "memberof": "src/Log.js~DefaultBackend",
+    "longname": "src/Log.js~DefaultBackend#error",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "params": [
+      {
+        "name": "msg",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 144,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "Log",
+    "memberof": "src/Log.js",
+    "longname": "src/Log.js~Log",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Log.js",
+    "importStyle": "{Log}",
+    "description": "Logging device.\n\nDisplay logging information using Log.info, Log.debug, Log.warn or Log.error\ndepending on the level of logging required.",
+    "lineNumber": 27,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 145,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/NetCodec.js",
+    "memberof": null,
+    "longname": "src/NetCodec.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from './Log.js';\n\nexport default class NetCodec {\n\n  constructor(socket) {\n    this._socket = socket;\n\n    this._clientSubscribers = [];\n    this._updateListener = null;\n    this._RPCListener = null;\n\n    socket.on('message', (raw) => {\n      var packet = JSON.parse(raw);\n      if (packet.dest === 'client') {\n        for (let sub of this._clientSubscribers) {\n          sub.cb.call(sub.ctx, packet.type, packet.data);\n        }\n      } else if (packet.dest === 'update'){\n        if (this._updateListener !== null) {\n          this._updateListener(packet.data);\n        }\n      } else if (packet.dest === 'RPC') {\n        if (this._RPCListener !== null) {\n          this._RPCListener(packet.scene, packet.entity, packet.component, packet.method, packet.data);\n        }\n      } else {\n        throw new Error(`Unknown packet destination: ${packet.dest}`);\n      }\n    });\n  }\n\n  sendClientMessage(type, data) {\n    this._socket.send(JSON.stringify({\n      dest: 'client',\n      type: type,\n      data: data\n    }));\n  }\n\n  onClientMessage(cb, ctx) {\n    this._clientSubscribers.push({\n      cb: cb,\n      ctx: ctx\n    });\n  }\n\n  sendUpdate(update) {\n    this._socket.send(JSON.stringify({\n      dest: 'update',\n      data: update\n    }));\n  }\n\n  setUpdateListener(listener) {\n    this._updateListener = listener;\n  }\n\n  sendRPC(scene, entity, component, method, data) {\n    this._socket.send(JSON.stringify({\n      dest: 'RPC',\n      scene: scene,\n      entity: entity,\n      component: component,\n      method: method,\n      data: data\n    }));\n  }\n\n  onRPC(listener) {\n    this._RPCListener = listener;\n  }\n\n}\n"
+  },
+  {
+    "__docId__": 146,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "NetCodec",
+    "memberof": "src/NetCodec.js",
+    "longname": "src/NetCodec.js~NetCodec",
+    "access": null,
+    "export": true,
+    "importPath": "./src/NetCodec.js",
+    "importStyle": "NetCodec",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 147,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "params": [
+      {
+        "name": "socket",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 148,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_socket",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#_socket",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 149,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_clientSubscribers",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#_clientSubscribers",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 150,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_updateListener",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#_updateListener",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 151,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_RPCListener",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#_RPCListener",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 152,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "sendClientMessage",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#sendClientMessage",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "params": [
+      {
+        "name": "type",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 153,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onClientMessage",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#onClientMessage",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "params": [
+      {
+        "name": "cb",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "ctx",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 154,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "sendUpdate",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#sendUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 47,
+    "undocument": true,
+    "params": [
+      {
+        "name": "update",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 155,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setUpdateListener",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#setUpdateListener",
+    "access": null,
+    "description": null,
+    "lineNumber": 54,
+    "undocument": true,
+    "params": [
+      {
+        "name": "listener",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 156,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_updateListener",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#_updateListener",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 157,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "sendRPC",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#sendRPC",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "undocument": true,
+    "params": [
+      {
+        "name": "scene",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "entity",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "component",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "method",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 158,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onRPC",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#onRPC",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "undocument": true,
+    "params": [
+      {
+        "name": "listener",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 159,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_RPCListener",
+    "memberof": "src/NetCodec.js~NetCodec",
+    "longname": "src/NetCodec.js~NetCodec#_RPCListener",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 160,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/RPC.js",
+    "memberof": null,
+    "longname": "src/RPC.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from './Log.js';\nimport game from './Game.js';\n\nclass RPC {\n\n  init(codec) {\n    this.codec = codec;\n    codec.onRPC((scene, entity, component, method, data) => this.onRemote(scene, entity, component, method, data));\n  }\n\n  call(component, method, data) {\n    this.codec.sendRPC(component.scene.id, component.entity.id, component.id, method, data);\n  }\n\n  onRemote(scene, entity, component, method, data) {\n    const sc = game.getScene(scene);\n    if (sc == null) return;\n    const ent = sc.model.getEntity(entity);\n    if (ent == null) return;\n    const comp = ent.components[component];\n    if (comp == null) return;\n    comp[method].call(comp, data);\n  }\n}\n\nexport default new RPC();\n"
+  },
+  {
+    "__docId__": 161,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "RPC",
+    "memberof": "src/RPC.js",
+    "longname": "src/RPC.js~RPC",
+    "access": null,
+    "export": true,
+    "importPath": "./src/RPC.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 4,
+    "pseudoExport": true,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 162,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "init",
+    "memberof": "src/RPC.js~RPC",
+    "longname": "src/RPC.js~RPC#init",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "params": [
+      {
+        "name": "codec",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 163,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "codec",
+    "memberof": "src/RPC.js~RPC",
+    "longname": "src/RPC.js~RPC#codec",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 164,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "call",
+    "memberof": "src/RPC.js~RPC",
+    "longname": "src/RPC.js~RPC#call",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "component",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "method",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 165,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onRemote",
+    "memberof": "src/RPC.js~RPC",
+    "longname": "src/RPC.js~RPC#onRemote",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "params": [
+      {
+        "name": "scene",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "entity",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "component",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "method",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 166,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "rPC",
+    "memberof": "src/RPC.js",
+    "longname": "src/RPC.js~rPC",
+    "access": null,
+    "export": true,
+    "importPath": "./src/RPC.js",
+    "importStyle": "rPC",
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "src/RPC.js~RPC"
+      ]
+    }
+  },
+  {
+    "__docId__": 167,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Scene.js",
+    "memberof": null,
+    "longname": "src/Scene.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Entity from './Entity.js';\nimport GameModel from './GameModel.js';\nimport { uid } from './utils.js';\nimport { Log } from './Log.js';\nimport GraphicSystem from './systems/GraphicSystem.js';\n\n/* globals Int8Array */\nconst emptyArray = new Int8Array(0);\n\nexport default class Scene {\n\n  constructor(id = null) {\n    this._model = new GameModel(this);\n    this._id = (id != null) ? id : uid();\n    this._systems = [];\n  }\n\n  onCreate() {\n    this.addSystem(new GraphicSystem());\n  }\n\n  onUpdate(dt) {\n    for (const sys of this._systems) {\n      sys.onUpdate(dt);\n    }\n    this._model.update(dt);\n    for (const i of Object.keys(this._model.entities)) {\n      const entity = this._model.entities[i];\n      if (entity.destroyed) {\n        entity.onDestroy();\n        this.model.removeEntity(entity);\n      }\n    }\n  }\n\n  getSystem(Type) {\n    for (const i of Object.keys(this._systems)) {\n      const sys = this._systems[i];\n      if (sys.constructor.name === Type.name) {\n        return sys;\n      }\n    }\n  }\n\n  addSystem(system) {\n    this._systems.push(system);\n  }\n\n  get id() {\n    return this._id;\n  }\n\n  get model() {\n    return this._model;\n  }\n\n  get entities() {\n    return this._model.entities;\n  }\n\n  newEntity(parent = null) {\n    return this.newEntityWithComponents(emptyArray, parent);\n  }\n\n  newEntityWithComponents(comps, parent = null) {\n    Log.info('creating entity');\n    var entity = new Entity(this);\n    entity.parent = parent;\n    this._model.addEntity(entity);\n    entity.addComponents(comps);\n    entity.onCreate();\n    return entity;\n  }\n\n  destroy(entity) {\n    this._model.removeEntity(entity);\n    entity.onDestroy();\n  }\n\n}\n"
+  },
+  {
+    "__docId__": 168,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "emptyArray",
+    "memberof": "src/Scene.js",
+    "longname": "src/Scene.js~emptyArray",
+    "access": null,
+    "export": false,
+    "importPath": "./src/Scene.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "Int8Array"
+      ]
+    }
+  },
+  {
+    "__docId__": 169,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Scene",
+    "memberof": "src/Scene.js",
+    "longname": "src/Scene.js~Scene",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Scene.js",
+    "importStyle": "Scene",
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 170,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "params": [
+      {
+        "name": "id",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": null,
+        "defaultValue": "null"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 171,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_model",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#_model",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 172,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_id",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#_id",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 173,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_systems",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#_systems",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 174,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 175,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#onUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "params": [
+      {
+        "name": "dt",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 176,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getSystem",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#getSystem",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "params": [
+      {
+        "name": "Type",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 177,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addSystem",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#addSystem",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "params": [
+      {
+        "name": "system",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 178,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "id",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#id",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 179,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "model",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#model",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 180,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "entities",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#entities",
+    "access": null,
+    "description": null,
+    "lineNumber": 57,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 181,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "newEntity",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#newEntity",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "undocument": true,
+    "params": [
+      {
+        "name": "parent",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": null,
+        "defaultValue": "null"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 182,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "newEntityWithComponents",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#newEntityWithComponents",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "undocument": true,
+    "params": [
+      {
+        "name": "comps",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "parent",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": null,
+        "defaultValue": "null"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 183,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "destroy",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#destroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "undocument": true,
+    "params": [
+      {
+        "name": "entity",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 184,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Server.js",
+    "memberof": null,
+    "longname": "src/Server.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from './Log.js';\nimport ClientHandle from './ClientHandle.js';\nimport Timer from './Timer.js';\n\nexport default class {\n  constructor(server) {\n    Log.info('Hello from default server');\n    this._clients = [];\n\n    this._timer = new Timer(() => this.updateClients());\n    this._timer.setInterval(100);\n\n    this.onCreate();\n\n    server.io.on('connection', (socket) => {\n      var client = new ClientHandle(socket);\n      this._clients.push(client);\n      this.onClientConnect(client);\n    });\n\n    this._timer.start();\n  }\n\n  /**\n    * Updates the state of connected clients\n    */\n  updateClients() {\n    for (let c of this._clients) {\n      c.updateClient();\n    }\n  }\n\n  onCreate() {}\n\n  onClientConnect(client) {}\n}\n"
+  },
+  {
+    "__docId__": 185,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Server",
+    "memberof": "src/Server.js",
+    "longname": "src/Server.js~Server",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Server.js",
+    "importStyle": "Server",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 186,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/Server.js~Server",
+    "longname": "src/Server.js~Server#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "params": [
+      {
+        "name": "server",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 187,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_clients",
+    "memberof": "src/Server.js~Server",
+    "longname": "src/Server.js~Server#_clients",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 188,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_timer",
+    "memberof": "src/Server.js~Server",
+    "longname": "src/Server.js~Server#_timer",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 189,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "updateClients",
+    "memberof": "src/Server.js~Server",
+    "longname": "src/Server.js~Server#updateClients",
+    "access": null,
+    "description": "Updates the state of connected clients",
+    "lineNumber": 27,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 190,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/Server.js~Server",
+    "longname": "src/Server.js~Server#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 191,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onClientConnect",
+    "memberof": "src/Server.js~Server",
+    "longname": "src/Server.js~Server#onClientConnect",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "params": [
+      {
+        "name": "client",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 192,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/System.js",
+    "memberof": null,
+    "longname": "src/System.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 2,
+    "content": "\nexport default class System {\n  onUpdate() { }\n}\n"
+  },
+  {
+    "__docId__": 193,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "System",
+    "memberof": "src/System.js",
+    "longname": "src/System.js~System",
+    "access": null,
+    "export": true,
+    "importPath": "./src/System.js",
+    "importStyle": "System",
+    "description": null,
+    "lineNumber": 2,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 194,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/System.js~System",
+    "longname": "src/System.js~System#onUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 195,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Timer.js",
+    "memberof": null,
+    "longname": "src/Timer.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import {Log} from './Log.js';\n\n/* globals requestAnimationFrame, setTimeout */\n\nexport default class Timer {\n\n  constructor(cb) {\n    this._cb = cb;\n    this._stopped = false;\n    this._interval = 16;\n    this._useAnimFrame = (typeof window !== 'undefined');\n    this._lastTime = 0;\n  }\n\n  _run() {\n    if (this._stopped) return;\n    var time = Date.now();\n\n    this._cb(time - this._lastTime);\n\n    this._lastTime = time;\n\n    if (this._useAnimFrame)\n      requestAnimationFrame( () => this._run());\n    else\n      setTimeout(() => this._run(), this._interval);\n  }\n\n  start() {\n    this._lastTime = Date.now();\n    this._stopped = false;\n    this._run();\n  }\n\n  stop() {\n    this._stopped = true;\n  }\n\n  setInterval(time) {\n    this._useAnimFrame = false;\n    this._interval = time;\n  }\n}\n"
+  },
+  {
+    "__docId__": 196,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Timer",
+    "memberof": "src/Timer.js",
+    "longname": "src/Timer.js~Timer",
+    "access": null,
+    "export": true,
+    "importPath": "./src/Timer.js",
+    "importStyle": "Timer",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 197,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "cb",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 198,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cb",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_cb",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 199,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_stopped",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_stopped",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 200,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_interval",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_interval",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 201,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_useAnimFrame",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_useAnimFrame",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 202,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lastTime",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_lastTime",
+    "access": null,
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 203,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_run",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_run",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 204,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lastTime",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_lastTime",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 205,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "start",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#start",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 206,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lastTime",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_lastTime",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 207,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_stopped",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_stopped",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 208,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "stop",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#stop",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 209,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_stopped",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_stopped",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 210,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setInterval",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#setInterval",
+    "access": null,
+    "description": null,
+    "lineNumber": 39,
+    "undocument": true,
+    "params": [
+      {
+        "name": "time",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 211,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_useAnimFrame",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_useAnimFrame",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 212,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_interval",
+    "memberof": "src/Timer.js~Timer",
+    "longname": "src/Timer.js~Timer#_interval",
+    "access": null,
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 213,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/Types.js",
+    "memberof": null,
+    "longname": "src/Types.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "export default {\n  Component: function(CType) {\n    return CType.name;\n  },\n  isComponent: function(tpe) {\n    return typeof tpe === 'string';\n  },\n  Int: 0,\n  Float: 1,\n  Array: 2,\n  Object: 3,\n  String: 4,\n  Boolean: 5\n};\n"
+  },
+  {
+    "__docId__": 214,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Camera.js",
+    "memberof": null,
+    "longname": "src/components/Camera.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from '../Log.js';\n\nimport Component from '../Component.js';\nimport Types from '../Types.js';\nimport gd from '../drivers/Graphics.js';\nimport GraphicSystem from '../systems/GraphicSystem.js';\n\nexport default class Camera extends Component {\n\n  onCreate() {\n    this.transform.x = 20;\n    this.transform.y = 50;\n\n    this.createAttribute('backgroundColor', '#fff', Types.String);\n    this.createAttribute('width', 1366, Types.Int);\n    this.createAttribute('height', 768, Types.Int);\n\n    if (gd.available()) {\n      Log.info('Graphics context is available');\n      gd.init();\n    } else {\n      this.disable();\n    }\n  }\n\n  onDestroy() {\n\n  }\n\n  onUpdate() {\n    // Clear the whole surface before painting entities\n    gd.clear(this.backgroundColor);\n\n    gd.ctx.save();\n    // TODO: Center camera\n    gd.ctx.translate(this.width / 2 - this.transform.x, this.height / 2 - this.transform.y);\n\n    // Determine size factor\n    var f = Math.max(gd.width/this.width, gd.height/this.height);\n    gd.ctx.scale(f, f);\n\n    var sprites = this.scene.getSystem(GraphicSystem).sprites;\n    for (const sprite of sprites) {\n      sprite.draw(gd.ctx);\n    }\n    gd.ctx.restore();\n  }\n}\n"
+  },
+  {
+    "__docId__": 215,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Camera",
+    "memberof": "src/components/Camera.js",
+    "longname": "src/components/Camera.js~Camera",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/Camera.js",
+    "importStyle": "Camera",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/Component.js~Component"
+    ]
+  },
+  {
+    "__docId__": 216,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/Camera.js~Camera",
+    "longname": "src/components/Camera.js~Camera#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 217,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDestroy",
+    "memberof": "src/components/Camera.js~Camera",
+    "longname": "src/components/Camera.js~Camera#onDestroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 218,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/components/Camera.js~Camera",
+    "longname": "src/components/Camera.js~Camera#onUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 219,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/CircleShape.js",
+    "memberof": null,
+    "longname": "src/components/CircleShape.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Types from '../Types.js';\nimport Shape from './Shape.js';\n\n\n/**\n * Circle shape sprite.\n *\n * The circle is centered around `transform` coordinates\n */\nexport default class CircleShape extends Shape {\n  onCreate() {\n    super.onCreate();\n    this.createAttribute('radius', 20, Types.Float);\n  }\n\n\n  /**\n   * Traces a circle shape\n   *\n   * @protected\n   * @param  {CanvasRenderingContext2D} ctx\n   */\n  traceShape(ctx) {\n    ctx.arc(0, 0, this.radius, 0, 2 * Math.PI);\n    ctx.closePath();\n  }\n}\n"
+  },
+  {
+    "__docId__": 220,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "CircleShape",
+    "memberof": "src/components/CircleShape.js",
+    "longname": "src/components/CircleShape.js~CircleShape",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/CircleShape.js",
+    "importStyle": "CircleShape",
+    "description": "Circle shape sprite.\n\nThe circle is centered around `transform` coordinates",
+    "lineNumber": 10,
+    "interface": false,
+    "extends": [
+      "src/components/Shape.js~Shape"
+    ]
+  },
+  {
+    "__docId__": 221,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/CircleShape.js~CircleShape",
+    "longname": "src/components/CircleShape.js~CircleShape#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 222,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "traceShape",
+    "memberof": "src/components/CircleShape.js~CircleShape",
+    "longname": "src/components/CircleShape.js~CircleShape#traceShape",
+    "access": "protected",
+    "description": "Traces a circle shape",
+    "lineNumber": 23,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "CanvasRenderingContext2D"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctx",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 223,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Input.js",
+    "memberof": null,
+    "longname": "src/components/Input.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from '../Log.js';\nimport Component from '../Component.js';\nimport Types from '../Types.js';\nimport RPC from '../RPC.js';\nimport { Keycodes } from '../Keycodes.js';\n\n/* global window */\n\nexport default class Input extends Component {\n\n  onCreate() {\n    // TODO (after diff update): have an exhaustive key map matching Keycodes definitions\n    const keys = {\n      left: false,\n      right: false,\n      up: false,\n      down: false\n    };\n    this.createAttribute('keys', keys, Types.Object);\n\n    this._keyDownListener = (evt) => this.handleKeyDown(evt);\n    this._keyUpListener = (evt) => this.handleKeyUp(evt);\n      if (this.enabled === true) {\n      this._bindHandlers();\n    }\n  }\n\n  _inputAvailable() {\n    return typeof window !== 'undefined';\n  }\n\n  /**\n   * onEvent functions are client-side only. Default implementation transferes\n   * event to handleEvent which runs on both client and server.\n   */\n  handleKeyDown(nativeEvent) {\n    var evt = {\n      type: 'keydown',\n      which: nativeEvent.which\n    };\n    this.entity.triggerEvent('keydown', evt);\n    RPC.call(this, 'handleEvent', evt);\n    this.handleEvent(evt);\n  }\n\n  handleKeyUp(nativeEvent) {\n    var evt = {\n      type: 'keyup',\n      which: nativeEvent.which\n    };\n    this.entity.triggerEvent('keyup', evt);\n    RPC.call(this, 'handleEvent', evt);\n    this.handleEvent(evt);\n  }\n\n  /**\n    * Main event dispatching function\n    */\n  handleEvent(evt) {\n    switch(evt.type) {\n      case 'keydown':\n      switch(evt.which) {\n        case Keycodes.d:\n        this.keys.right = true;\n        break;\n        case Keycodes.s:\n        this.keys.down = true;\n        break;\n        case Keycodes.z:\n        case Keycodes.w:\n        this.keys.up = true;\n        break;\n        case Keycodes.q:\n        case Keycodes.a:\n        this.keys.left = true;\n        break;\n      }\n      break;\n      case 'keyup':\n      switch(evt.which) {\n        case Keycodes.d:\n          this.keys.right = false;\n          break;\n        case Keycodes.s:\n          this.keys.down = false;\n          break;\n        case Keycodes.z:\n        case Keycodes.w:\n          this.keys.up = false;\n          break;\n        case Keycodes.q:\n        case Keycodes.a:\n          this.keys.left = false;\n          break;\n      }\n      break;\n    }\n  }\n\n\n  _bindHandlers() {\n        Log.info(`bind ${this.id}`);\n    if (this._inputAvailable() === true) {\n      window.addEventListener('keydown', this._keyDownListener);\n      window.addEventListener('keyup', this._keyUpListener);\n    }\n  }\n\n  _unbindHandlers() {\n        Log.info(`unbind ${this.id}`);\n    if (this._inputAvailable() === true) {\n      window.removeEventListener('keydown', this._keyDownListener);\n      window.removeEventListener('keyup', this._keyUpListener);\n    }\n  }\n\n  onDestroy() {\n    this._unbindHandlers();\n  }\n\n  disable() {\n    super.disable();\n    this._unbindHandlers();\n  }\n\n  enable() {\n    super.enable();\n    this._bindHandlers();\n  }\n}\n"
+  },
+  {
+    "__docId__": 224,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Input",
+    "memberof": "src/components/Input.js",
+    "longname": "src/components/Input.js~Input",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/Input.js",
+    "importStyle": "Input",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/Component.js~Component"
+    ]
+  },
+  {
+    "__docId__": 225,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 226,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_keyDownListener",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#_keyDownListener",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 227,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_keyUpListener",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#_keyUpListener",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 228,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_inputAvailable",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#_inputAvailable",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 229,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "handleKeyDown",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#handleKeyDown",
+    "access": null,
+    "description": "onEvent functions are client-side only. Default implementation transferes\nevent to handleEvent which runs on both client and server.",
+    "lineNumber": 36,
+    "params": [
+      {
+        "name": "nativeEvent",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 230,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "handleKeyUp",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#handleKeyUp",
+    "access": null,
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "params": [
+      {
+        "name": "nativeEvent",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 231,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "handleEvent",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#handleEvent",
+    "access": null,
+    "description": "Main event dispatching function",
+    "lineNumber": 59,
+    "params": [
+      {
+        "name": "evt",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 232,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_bindHandlers",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#_bindHandlers",
+    "access": null,
+    "description": null,
+    "lineNumber": 101,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 233,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_unbindHandlers",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#_unbindHandlers",
+    "access": null,
+    "description": null,
+    "lineNumber": 109,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 234,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDestroy",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#onDestroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 117,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 235,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "disable",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#disable",
+    "access": null,
+    "description": null,
+    "lineNumber": 121,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 236,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "enable",
+    "memberof": "src/components/Input.js~Input",
+    "longname": "src/components/Input.js~Input#enable",
+    "access": null,
+    "description": null,
+    "lineNumber": 126,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 237,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Physics.js",
+    "memberof": null,
+    "longname": "src/components/Physics.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from '../Log.js';\nimport Component from '../Component.js';\nimport Types from '../Types.js';\nimport PhysicSystem from '../systems/PhysicSystem.js';\n\nexport default class Physics extends Component {\n\n  onCreate() {\n    super.onCreate();\n    this.createAttribute('vx', 0, Types.Float);\n    this.createAttribute('vy', 0, Types.Float);\n    this.createAttribute('vtheta', 0, Types.Float);\n    // Only round shapes for now\n    this.createAttribute('radius', 0, Types.Float);\n\n    this._physicsSystem = this.scene.getSystem(PhysicSystem);\n    this._physicsSystem.addObject(this);\n  }\n\n  onDestroy() {\n    super.onDestroy();\n    this._physicsSystem.removeObject(this);\n  }\n}\n"
+  },
+  {
+    "__docId__": 238,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Physics",
+    "memberof": "src/components/Physics.js",
+    "longname": "src/components/Physics.js~Physics",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/Physics.js",
+    "importStyle": "Physics",
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/Component.js~Component"
+    ]
+  },
+  {
+    "__docId__": 239,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/Physics.js~Physics",
+    "longname": "src/components/Physics.js~Physics#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 240,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_physicsSystem",
+    "memberof": "src/components/Physics.js~Physics",
+    "longname": "src/components/Physics.js~Physics#_physicsSystem",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 241,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDestroy",
+    "memberof": "src/components/Physics.js~Physics",
+    "longname": "src/components/Physics.js~Physics#onDestroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 242,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/RawSprite.js",
+    "memberof": null,
+    "longname": "src/components/RawSprite.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Types from '../Types.js';\nimport Sprite from './Sprite.js';\n\n\n/**\n * Component for custom graphics.\n *\n * When an entity has a RawSprite component attached, it reveives `onDraw(ctx)` events.\n *\n * `onDraw(ctx)` has the same semantics as {@link Sprite#draw}.\n */\nexport default class RawSprite extends Sprite {\n\n  draw(ctx) {\n    this.entity.triggerEvent('draw', ctx);\n  }\n}\n"
+  },
+  {
+    "__docId__": 243,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "RawSprite",
+    "memberof": "src/components/RawSprite.js",
+    "longname": "src/components/RawSprite.js~RawSprite",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/RawSprite.js",
+    "importStyle": "RawSprite",
+    "description": "Component for custom graphics.\n\nWhen an entity has a RawSprite component attached, it reveives `onDraw(ctx)` events.\n\n`onDraw(ctx)` has the same semantics as {@link Sprite#draw}.",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "src/components/Sprite.js~Sprite"
+    ]
+  },
+  {
+    "__docId__": 244,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "draw",
+    "memberof": "src/components/RawSprite.js~RawSprite",
+    "longname": "src/components/RawSprite.js~RawSprite#draw",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "params": [
+      {
+        "name": "ctx",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 245,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/RectangleShape.js",
+    "memberof": null,
+    "longname": "src/components/RectangleShape.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Types from '../Types.js';\nimport Shape from './Shape.js';\n\n\n/**\n * Rectangle shape sprite.\n *\n * The drawn rectangle has its top-left corner at `transform` coordinates and\n * spans `width` units horizontally and `height` vertically.\n */\nexport default class RectangleShape extends Shape {\n\n  onCreate() {\n    super.onCreate();\n    this.createAttribute('width', 20, Types.Float);\n    this.createAttribute('height', 10, Types.Float);\n  }\n\n\n  /**\n   * Traces a rectangle shape\n   *\n   * @protected\n   * @param  {CanvasRenderingContext2D} ctx\n   */\n  traceShape(ctx) {\n    ctx.moveTo(0, 0);\n    ctx.lineTo(0 + this.width, 0);\n    ctx.lineTo(0 + this.width, 0 + this.height);\n    ctx.lineTo(0, 0 + this.height);\n    ctx.closePath();\n  }\n}\n"
+  },
+  {
+    "__docId__": 246,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "RectangleShape",
+    "memberof": "src/components/RectangleShape.js",
+    "longname": "src/components/RectangleShape.js~RectangleShape",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/RectangleShape.js",
+    "importStyle": "RectangleShape",
+    "description": "Rectangle shape sprite.\n\nThe drawn rectangle has its top-left corner at `transform` coordinates and\nspans `width` units horizontally and `height` vertically.",
+    "lineNumber": 11,
+    "interface": false,
+    "extends": [
+      "src/components/Shape.js~Shape"
+    ]
+  },
+  {
+    "__docId__": 247,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/RectangleShape.js~RectangleShape",
+    "longname": "src/components/RectangleShape.js~RectangleShape#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 248,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "traceShape",
+    "memberof": "src/components/RectangleShape.js~RectangleShape",
+    "longname": "src/components/RectangleShape.js~RectangleShape#traceShape",
+    "access": "protected",
+    "description": "Traces a rectangle shape",
+    "lineNumber": 26,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "CanvasRenderingContext2D"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctx",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 249,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Shape.js",
+    "memberof": null,
+    "longname": "src/components/Shape.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Types from '../Types.js';\nimport Sprite from './Sprite.js';\n\n\n/**\n * Base class for shape sprites\n */\nexport default class Shape extends Sprite {\n\n  onCreate() {\n    super.onCreate();\n    this.createAttribute('fillStyle', '#00f', Types.String);\n    this.createAttribute('strokeStyle', '#f00', Types.String);\n    this.createAttribute('fill', true, Types.Boolean);\n    this.createAttribute('stroke', false, Types.Boolean);\n  }\n\n\n\n\n  /**\n   * traceShape - Trace the shape using ctx.lineTo and co.\n   *\n   * This method should be overriden by subclasses.\n   *\n   * @protected\n   * @param  {CanvasRenderingContext2D} ctx The context on which to draw\n   */\n  traceShape(ctx) {}\n\n  draw(ctx) {\n    ctx.save();\n\n    ctx.fillStyle = this.fillStyle;\n    ctx.strokeStyle = this.strokeStyle;\n\n    ctx.translate(this.transform.x, this.transform.y);\n    ctx.rotate(this.transform.theta);\n\n    ctx.beginPath();\n\n    this.traceShape(ctx);\n\n    if (this.fill) ctx.fill();\n    if (this.stroke) ctx.stroke();\n\n    ctx.restore();\n  }\n}\n"
+  },
+  {
+    "__docId__": 250,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Shape",
+    "memberof": "src/components/Shape.js",
+    "longname": "src/components/Shape.js~Shape",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/Shape.js",
+    "importStyle": "Shape",
+    "description": "Base class for shape sprites",
+    "lineNumber": 8,
+    "interface": false,
+    "extends": [
+      "src/components/Sprite.js~Sprite"
+    ]
+  },
+  {
+    "__docId__": 251,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/Shape.js~Shape",
+    "longname": "src/components/Shape.js~Shape#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 252,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "traceShape",
+    "memberof": "src/components/Shape.js~Shape",
+    "longname": "src/components/Shape.js~Shape#traceShape",
+    "access": "protected",
+    "description": "traceShape - Trace the shape using ctx.lineTo and co.\n\nThis method should be overriden by subclasses.",
+    "lineNumber": 29,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "CanvasRenderingContext2D"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ctx",
+        "description": "The context on which to draw"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 253,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "draw",
+    "memberof": "src/components/Shape.js~Shape",
+    "longname": "src/components/Shape.js~Shape#draw",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "params": [
+      {
+        "name": "ctx",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 254,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Sprite.js",
+    "memberof": null,
+    "longname": "src/components/Sprite.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Component from '../Component.js';\nimport GraphicSystem from '../systems/GraphicSystem.js';\n\n\n/**\n * Base class for all graphic components.\n *\n * Components extending Sprite should implement {@link Sprite#draw} to draw something\n * to screen.\n */\nexport default class Sprite extends Component {\n\n  onCreate() {\n    super.onCreate();\n\n    this._graphicSystem = this.scene.getSystem(GraphicSystem);\n    this._graphicSystem.addSprite(this);\n  }\n\n  onDestroy() {\n    super.onDestroy();\n    this._graphicSystem.removeSprite(this);\n  }\n\n  /**\n   * Screen refresh handler.\n   *\n   * Subclasses should implement this function to draw something to the screen e\n   * very time the screen is refreshed.\n   *\n   * note: The screen is typically refreshed 60 times a second which means that this method will\n   * be invoked a lot. You must make sure that no heavy computation happens in here.\n   */\n  draw(ctx) {}\n}\n"
+  },
+  {
+    "__docId__": 255,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Sprite",
+    "memberof": "src/components/Sprite.js",
+    "longname": "src/components/Sprite.js~Sprite",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/Sprite.js",
+    "importStyle": "Sprite",
+    "description": "Base class for all graphic components.\n\nComponents extending Sprite should implement {@link Sprite#draw} to draw something\nto screen.",
+    "lineNumber": 11,
+    "interface": false,
+    "extends": [
+      "src/Component.js~Component"
+    ]
+  },
+  {
+    "__docId__": 256,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/Sprite.js~Sprite",
+    "longname": "src/components/Sprite.js~Sprite#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 257,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_graphicSystem",
+    "memberof": "src/components/Sprite.js~Sprite",
+    "longname": "src/components/Sprite.js~Sprite#_graphicSystem",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 258,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onDestroy",
+    "memberof": "src/components/Sprite.js~Sprite",
+    "longname": "src/components/Sprite.js~Sprite#onDestroy",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 259,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "draw",
+    "memberof": "src/components/Sprite.js~Sprite",
+    "longname": "src/components/Sprite.js~Sprite#draw",
+    "access": null,
+    "description": "Screen refresh handler.\n\nSubclasses should implement this function to draw something to the screen e\nvery time the screen is refreshed.\n\nnote: The screen is typically refreshed 60 times a second which means that this method will\nbe invoked a lot. You must make sure that no heavy computation happens in here.",
+    "lineNumber": 34,
+    "params": [
+      {
+        "name": "ctx",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 260,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/Transform.js",
+    "memberof": null,
+    "longname": "src/components/Transform.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import Types from '../Types.js';\nimport Component from '../Component.js';\n\n\n/**\n * Defines a world transformation with (`x`, `y`) coordinates and an angle `theta`\n */\nexport default class Transform extends Component {\n\n  onCreate() {\n    this.createAttribute('x', 0, Types.Int);\n    this.createAttribute('y', 0, Types.Int);\n    this.createAttribute('theta', 0, Types.Int);\n  }\n\n\n  /**\n   * Computes the distance to another transformation.\n   *\n   * @param  {Transform} other\n   * @return {number} The absolute distance from this transform to other\n   */\n  distanceTo(other) {\n    const dx = this.x - other.x;\n    const dy = this.y - other.y;\n    return Math.sqrt(dx*dx+dy*dy);\n  }\n}\n"
+  },
+  {
+    "__docId__": 261,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Transform",
+    "memberof": "src/components/Transform.js",
+    "longname": "src/components/Transform.js~Transform",
+    "access": null,
+    "export": true,
+    "importPath": "./src/components/Transform.js",
+    "importStyle": "Transform",
+    "description": "Defines a world transformation with (`x`, `y`) coordinates and an angle `theta`",
+    "lineNumber": 8,
+    "interface": false,
+    "extends": [
+      "src/Component.js~Component"
+    ]
+  },
+  {
+    "__docId__": 262,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onCreate",
+    "memberof": "src/components/Transform.js~Transform",
+    "longname": "src/components/Transform.js~Transform#onCreate",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 263,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "distanceTo",
+    "memberof": "src/components/Transform.js~Transform",
+    "longname": "src/components/Transform.js~Transform#distanceTo",
+    "access": null,
+    "description": "Computes the distance to another transformation.",
+    "lineNumber": 23,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Transform"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "other",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "number"
+      ],
+      "spread": false,
+      "description": "The absolute distance from this transform to other"
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 264,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/components/index.js",
+    "memberof": null,
+    "longname": "src/components/index.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import game from '../Game.js';\n\nimport Shape from './Shape.js';\nimport CircleShape from './CircleShape.js';\nimport RectangleShape from './RectangleShape.js';\nimport RawSprite from './RawSprite.js';\nimport Transform from './Transform.js';\nimport Camera from './Camera.js';\nimport Sprite from './Sprite.js';\nimport Input from './Input.js';\nimport Physics from './Physics.js';\n\ngame.registerComponent(Shape);\ngame.registerComponent(CircleShape);\ngame.registerComponent(RectangleShape);\ngame.registerComponent(RawSprite);\ngame.registerComponent(Transform);\ngame.registerComponent(Camera);\ngame.registerComponent(Sprite);\ngame.registerComponent(Input);\ngame.registerComponent(Physics);\n"
+  },
+  {
+    "__docId__": 265,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/drivers/Graphics.js",
+    "memberof": null,
+    "longname": "src/drivers/Graphics.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import { Log } from '../Log.js';\n\n/* globals document, window */\n\nconst CSS_RULEZ = [`\nbody, html {\n  margin: 0;\n  padding: 0;\n  height: 100%;\n}`,\n`#savannah-screen {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  background-color: transparent;\n}`];\n\nclass Graphics {\n\n  constructor() {\n    this._initialized = false;\n    this._isCanvasSupported = undefined;\n    this._ctx = null;\n  }\n\n  // Returns true if graphic rendering is available on this platform\n  available() {\n    if (typeof document === 'undefined' || typeof window === 'undefined') {\n      Log.info('No document or window available: graphics will be disabled.');\n      return false;\n    }\n    if (this._isCanvasSupported === undefined) {\n      this._isCanvasSupported = this._determineCanvasSupported();\n      if (this._isCanvasSupported) {\n        Log.info('Canvas is supported :)');\n      } else {\n        Log.info('Canvas not supported: graphics will be disabled.');\n      }\n    }\n    return this._isCanvasSupported;\n  }\n\n  init() {\n    if (this._initialized === true) {\n      return;\n    }\n\n    this._makeCanvas();\n    this._addCSSRules(CSS_RULEZ);\n    window.addEventListener('resize', () => this.updateCanvasSize());\n\n\n    this._initialized = true;\n  }\n\n  get height() {\n    return (typeof window !== 'undefined') ? window.innerHeight : 0;\n  }\n\n  get width() {\n    return (typeof window !== 'undefined') ? window.innerWidth : 0;\n  }\n\n  clear(color = '#fff') {\n    this._ctx.fillStyle = color;\n    this._ctx.fillRect(0, 0, this._canvas.width, this._canvas.height);\n  }\n\n  get ctx() {\n    return this._ctx;\n  }\n\n  _makeCanvas() {\n    this._canvas = document.createElement('canvas');\n    this._canvas.id = 'savannah-screen';\n    this._ctx = this._canvas.getContext('2d');\n    document.body.appendChild(this._canvas);\n    this.updateCanvasSize();\n  }\n\n  _determineCanvasSupported() {\n    var elem = document.createElement('canvas');\n    return !!(elem.getContext && elem.getContext('2d'));\n  }\n\n  _addCSSRules(rules) {\n    var sheet = window.document.styleSheets[0];\n    if (typeof sheet === 'undefined') {\n      // The document contains no styleSheet\n      document.head.appendChild(document.createElement('style'));\n      // Try again now\n      sheet = window.document.styleSheets[0];\n    }\n\n    for (let rule of rules) {\n      if (typeof sheet.insertRule === 'function') {\n        sheet.insertRule(rule, sheet.cssRules.length);\n      } else {\n        sheet.addRule(rule, -1);\n      }\n    }\n  }\n\n  updateCanvasSize() {\n    this._canvas.width = window.innerWidth;\n    this._canvas.height = window.innerHeight;\n  }\n\n\n\n}\n\nexport default new Graphics();\n"
+  },
+  {
+    "__docId__": 266,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "CSS_RULEZ",
+    "memberof": "src/drivers/Graphics.js",
+    "longname": "src/drivers/Graphics.js~CSS_RULEZ",
+    "access": null,
+    "export": false,
+    "importPath": "./src/drivers/Graphics.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 267,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Graphics",
+    "memberof": "src/drivers/Graphics.js",
+    "longname": "src/drivers/Graphics.js~Graphics",
+    "access": null,
+    "export": true,
+    "importPath": "./src/drivers/Graphics.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 18,
+    "pseudoExport": true,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 268,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 269,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_initialized",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_initialized",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 270,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_isCanvasSupported",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_isCanvasSupported",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 271,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_ctx",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_ctx",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 272,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "available",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#available",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 273,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_isCanvasSupported",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_isCanvasSupported",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 274,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "init",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#init",
+    "access": null,
+    "description": null,
+    "lineNumber": 43,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 275,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_initialized",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_initialized",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "__docId__": 276,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "height",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#height",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 277,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "width",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#width",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 278,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "clear",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#clear",
+    "access": null,
+    "description": null,
+    "lineNumber": 64,
+    "undocument": true,
+    "params": [
+      {
+        "name": "color",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "#fff",
+        "defaultValue": "#fff"
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 279,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "ctx",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#ctx",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 280,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_makeCanvas",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_makeCanvas",
+    "access": null,
+    "description": null,
+    "lineNumber": 73,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 281,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_canvas",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_canvas",
+    "access": null,
+    "description": null,
+    "lineNumber": 74,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 282,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_ctx",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_ctx",
+    "access": null,
+    "description": null,
+    "lineNumber": 76,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 283,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_determineCanvasSupported",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_determineCanvasSupported",
+    "access": null,
+    "description": null,
+    "lineNumber": 81,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 284,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_addCSSRules",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#_addCSSRules",
+    "access": null,
+    "description": null,
+    "lineNumber": 86,
+    "undocument": true,
+    "params": [
+      {
+        "name": "rules",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 285,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "updateCanvasSize",
+    "memberof": "src/drivers/Graphics.js~Graphics",
+    "longname": "src/drivers/Graphics.js~Graphics#updateCanvasSize",
+    "access": null,
+    "description": null,
+    "lineNumber": 104,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 286,
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "graphics",
+    "memberof": "src/drivers/Graphics.js",
+    "longname": "src/drivers/Graphics.js~graphics",
+    "access": null,
+    "export": true,
+    "importPath": "./src/drivers/Graphics.js",
+    "importStyle": "graphics",
+    "description": null,
+    "lineNumber": 113,
+    "undocument": true,
+    "type": {
+      "types": [
+        "src/drivers/Graphics.js~Graphics"
+      ]
+    }
+  },
+  {
+    "__docId__": 287,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/systems/GraphicSystem.js",
+    "memberof": null,
+    "longname": "src/systems/GraphicSystem.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import System from '../System.js';\nimport { Log } from '../Log.js';\n\nexport default class GraphicSystem extends System {\n\n  constructor() {\n    super();\n    this._sprites = [];\n  }\n\n  addSprite(sprite) {\n    this._sprites.push(sprite);\n    Log.info(`Graphics: push sprite (length: ${this._sprites.length})`);\n  }\n\n  removeSprite(sprite) {\n    const idx = this._sprites.indexOf(sprite);\n    if (idx < 0) {\n      Log.warn('Removing an sprite which is not in graphics system');\n      return;\n    }\n    this._sprites.splice(idx, 1);\n    Log.info(`Graphics: pop sprite (length: ${this._sprites.length})`);\n  }\n\n  get sprites() {\n    return this._sprites;\n  }\n}\n"
+  },
+  {
+    "__docId__": 288,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "GraphicSystem",
+    "memberof": "src/systems/GraphicSystem.js",
+    "longname": "src/systems/GraphicSystem.js~GraphicSystem",
+    "access": null,
+    "export": true,
+    "importPath": "./src/systems/GraphicSystem.js",
+    "importStyle": "GraphicSystem",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/System.js~System"
+    ]
+  },
+  {
+    "__docId__": 289,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/systems/GraphicSystem.js~GraphicSystem",
+    "longname": "src/systems/GraphicSystem.js~GraphicSystem#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 290,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_sprites",
+    "memberof": "src/systems/GraphicSystem.js~GraphicSystem",
+    "longname": "src/systems/GraphicSystem.js~GraphicSystem#_sprites",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 291,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addSprite",
+    "memberof": "src/systems/GraphicSystem.js~GraphicSystem",
+    "longname": "src/systems/GraphicSystem.js~GraphicSystem#addSprite",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "sprite",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 292,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeSprite",
+    "memberof": "src/systems/GraphicSystem.js~GraphicSystem",
+    "longname": "src/systems/GraphicSystem.js~GraphicSystem#removeSprite",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [
+      {
+        "name": "sprite",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 293,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "sprites",
+    "memberof": "src/systems/GraphicSystem.js~GraphicSystem",
+    "longname": "src/systems/GraphicSystem.js~GraphicSystem#sprites",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 294,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/systems/PhysicSystem.js",
+    "memberof": null,
+    "longname": "src/systems/PhysicSystem.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "import System from '../System.js';\nimport { Log } from '../Log.js';\n\nexport default class PhysicSystem extends System {\n\n  constructor() {\n    super();\n    this._obj = [];\n    this.buoyancy = 0.1;\n    this.gravity = 0;\n    this._boundaries = {\n      left: -Infinity,\n      right: Infinity,\n      top: -Infinity,\n      bottom: Infinity\n    };\n  }\n\n  addObject(obj) {\n    this._obj.push(obj);\n    Log.info(`Physics: push object (length: ${this._obj.length})`);\n  }\n\n  removeObject(obj) {\n    const idx = this._obj.indexOf(obj);\n    if (idx < 0) {\n      Log.warn('Removing an object which is not in physcis system');\n      return;\n    }\n    this._obj.splice(idx, 1);\n    Log.info(`Physics: pop object (length: ${this._obj.length})`);\n  }\n\n  get boundaries() {\n    return this._boundaries;\n  }\n\n  set boundaries(b) {\n    if (b.left != null) this._boundaries.left = b.left;\n    if (b.right != null) this._boundaries.right = b.right;\n    if (b.top != null) this._boundaries.top = b.top;\n    if (b.bottom != null) this._boundaries.bottom = b.bottom;\n  }\n\n  onUpdate(dt) {\n    // Update all objects positions\n    for (const obj of this._obj) {\n      obj.transform.x += obj.vx * dt;\n      obj.transform.y += obj.vy * dt;\n      obj.transform.theta += obj.vtheta * dt;\n    }\n\n    // Naïve collision detection\n    const objLength = this._obj.length;\n    let i=0, j=0;\n    for (i = 0 ; i < objLength ; i++){\n      const o1 = this._obj[i];\n      // Test collision with terrain boundaries\n      if (   o1.transform.x - o1.radius <= this._boundaries.left\n          || o1.transform.x + o1.radius >= this._boundaries.right\n          || o1.transform.y - o1.radius <= this._boundaries.top\n          || o1.transform.y + o1.radius >= this._boundaries.bottom) {\n        // If it is outside the terrain, adjust position and trigger collision\n        const oldX = o1.transform.x;\n        const oldY = o1.transform.y;\n\n        o1.transform.x = Math.max(\n            Math.min(o1.transform.x, this._boundaries.right - o1.radius),\n            this._boundaries.left + o1.radius);\n        o1.transform.y = Math.max(\n            Math.min(o1.transform.y, this._boundaries.bottom - o1.radius),\n            this._boundaries.top + o1.radius);\n\n        o1.entity.triggerEvent('collision', {\n          vx: (oldX != o1.transform.x) ? o1.vx : 0,\n          vy: (oldY != o1.transform.y) ? o1.vy : 0,\n          other: null\n        });\n      } else {\n        // Otherwise (if still in terrain), test collision with other objects\n        for (j = i+1 ; j < objLength ; j++) {\n          const o2 = this._obj[j];\n          if (o1.transform.distanceTo(o2.transform) < o1.radius + o2.radius) {\n            o1.entity.triggerEvent('collision', {\n              vx: o1.vx - o2.vx,\n              vy: o1.vy - o2.vy,\n              other: o2\n            });\n            o2.entity.triggerEvent('collision', {\n              vx: o2.vx - o1.vx,\n              vy: o2.vy - o1.vy,\n              other: o1\n            });\n          }\n        }\n      }\n    }\n  }\n}\n"
+  },
+  {
+    "__docId__": 295,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "PhysicSystem",
+    "memberof": "src/systems/PhysicSystem.js",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem",
+    "access": null,
+    "export": true,
+    "importPath": "./src/systems/PhysicSystem.js",
+    "importStyle": "PhysicSystem",
+    "description": null,
+    "lineNumber": 4,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/System.js~System"
+    ]
+  },
+  {
+    "__docId__": 296,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 6,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "__docId__": 297,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_obj",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#_obj",
+    "access": null,
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 298,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "buoyancy",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#buoyancy",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 299,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "gravity",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#gravity",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "__docId__": 300,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_boundaries",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#_boundaries",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 301,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "addObject",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#addObject",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "params": [
+      {
+        "name": "obj",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 302,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "removeObject",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#removeObject",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "params": [
+      {
+        "name": "obj",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 303,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "boundaries",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#boundaries",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 304,
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "boundaries",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#boundaries",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 305,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onUpdate",
+    "memberof": "src/systems/PhysicSystem.js~PhysicSystem",
+    "longname": "src/systems/PhysicSystem.js~PhysicSystem#onUpdate",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "params": [
+      {
+        "name": "dt",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 306,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "src/utils.js",
+    "memberof": null,
+    "longname": "src/utils.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 2,
+    "content": "\nfunction s4() {\n  return Math.floor((1 + Math.random()) * 0x10000)\n    .toString(16)\n    .substring(1);\n}\n\nexport function uid() {\n  return s4()+s4()+s4()+s4();\n}\n"
+  },
+  {
+    "__docId__": 307,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "s4",
+    "memberof": "src/utils.js",
+    "longname": "src/utils.js~s4",
+    "access": null,
+    "export": false,
+    "importPath": "./src/utils.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 2,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 308,
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "uid",
+    "memberof": "src/utils.js",
+    "longname": "src/utils.js~uid",
+    "access": null,
+    "export": true,
+    "importPath": "./src/utils.js",
+    "importStyle": "{uid}",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 310,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 311,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 312,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 313,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 314,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 315,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 316,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 317,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 318,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 319,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 320,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 321,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 322,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 323,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 324,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 325,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 326,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 327,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 328,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 329,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 330,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 331,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 332,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 333,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 334,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 335,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 336,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 337,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 338,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 339,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 340,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 341,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 342,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 343,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 344,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 345,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 346,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 347,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 348,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 349,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 350,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 351,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 352,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 353,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 354,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 355,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 356,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 358,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 359,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 360,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 361,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 362,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 363,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 364,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 365,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "access": null,
+    "description": "",
+    "builtinExternal": true
+  }
+]
