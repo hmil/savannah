@@ -95,6 +95,12 @@ export default class Entity {
     return comp;
   }
 
+  addComponents(Comps) {
+    for (let Comp of Comps) {
+      this.addComponent(Comp);
+    }
+  }
+
   _registerComponentHandlers(comp) {
     for (const evt of Object.keys(comp.eventHandlers)) {
       this._addEventHandler(evt, comp.eventHandlers[evt]);
@@ -108,12 +114,6 @@ export default class Entity {
     this._handlers[evt].push(fn);
   }
 
-  addComponents(Comps) {
-    for (let Comp of Comps) {
-      this.addComponent(Comp);
-    }
-  }
-  
   removeComponent(id) {
     throw new Error('Removing components is not supported');
     // Cannot remove component for now because we would need to remove associated event handlers
@@ -130,9 +130,14 @@ export default class Entity {
   }
 
   getComponent(Type) {
+    var name = Type;
+    if (typeof Type !== 'string') {
+      name = Type.name;
+    }
+    name = name.toLowerCase();
     for (const i of Object.keys(this._components)) {
       const comp = this._components[i];
-      if (comp.constructor.name === Type.name) {
+      if (comp.constructor.name.toLowerCase() === name) {
         return comp;
       }
     }

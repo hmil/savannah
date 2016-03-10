@@ -1,6 +1,8 @@
 import { Log } from './Log.js';
 import Timer from './Timer.js';
 
+import * as prefabs from '../prefabs.js';
+
 class Game {
 
   constructor() {
@@ -9,6 +11,13 @@ class Game {
     this._components = {};
     this._timer = new Timer((dt) => this.update(dt));
     this.playerId = null;
+
+    // Registering prefab components
+    for (const i of Object.keys(prefabs)) {
+      for (const compDef of prefabs[i]) {
+        this.registerComponent(compDef.comp);
+      }
+    }
   }
 
   get scenes() {
@@ -48,13 +57,14 @@ class Game {
 
 
   registerComponent(Comp) {
-    if (Comp.name in this._components) {
-      throw new Error(`Trying to register two components with the same name: ${Comp.name}`);
-    }
     this._components[Comp.name] = Comp;
   }
 
   getComponent(name) {
+    if (!this._components.hasOwnProperty(name)) {
+      console.log(this._components);
+      throw new Error(`Component ${name} is not registered!`);
+    }
     return this._components[name];
   }
 

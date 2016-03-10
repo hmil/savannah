@@ -1,11 +1,10 @@
 import 'scenes/index.js';
-import 'components/index.js';
-import 'core/components/index.js';
 
-import Input from 'core/components/Input.js';
 import game from 'core/Game.js';
 import Server from 'core/Server.js';
-import Player from 'components/Player.js';
+import PlayerComp from 'components/Player.js';
+
+import { Player } from 'prefabs.js';
 
 export default class extends Server {
 
@@ -15,9 +14,9 @@ export default class extends Server {
   }
 
   onClientConnect(client) {
-    var player = this.scene.newEntityWithComponents([Player, Input]);
+    var player = this.scene.newPrefab(Player);
     client.addToScene(this.scene);
-    player.getComponent(Player).spawn();
+    player.getComponent(PlayerComp).spawn();
     client.send('playerId', player.id);
   }
 

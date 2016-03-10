@@ -1,7 +1,6 @@
 import Pawn from './Pawn.js';
 import Component from 'core/Component.js';
 import CircleShape from 'core/components/CircleShape.js';
-import { Log } from 'core/Log.js';
 
 export default class Bullet extends Component {
 

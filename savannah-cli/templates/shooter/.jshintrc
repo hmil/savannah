@@ -2,6 +2,7 @@
   "esversion": 6,
   "eqnull": true,
   "undef": true,
+  "unused": true,
   "globals": {
     "console": true
   }

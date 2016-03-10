@@ -1,6 +1,4 @@
 import 'scenes/index.js';
-import 'components/index.js';
-import 'core/components/index.js';
 
 import Client from 'core/Client.js';
 import { Log } from 'core/Log.js';

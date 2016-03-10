@@ -1,15 +1,12 @@
-import { Log } from 'core/Log.js';
 import Component from 'core/Component.js';
 import Types from 'core/Types.js';
-import CircleShape from 'core/components/CircleShape.js';
-import Transform from 'core/components/Transform.js';
-import Physics from 'core/components/Physics.js';
 import RPC from 'core/RPC.js';
 import Input from 'core/components/Input.js';
 import { Keycodes } from 'core/Keycodes.js';
-import Camera from 'core/components/Camera.js';
 
-import Bullet from './Bullet.js';
+import BulletComp from 'components/Bullet.js';
+import { Bullet } from 'prefabs.js';
+
 import game from 'core/Game.js';
 
 export default class Pawn extends Component {
@@ -21,7 +18,6 @@ export default class Pawn extends Component {
     this.ANGULAR_SPEED = 0.005;
     this.COOLDOWN = 200;
     this.lastFire = 0;
-    this.physics.radius = 6;
 
     this.createAttribute('lives', 3, Types.Int);
 
@@ -111,12 +107,11 @@ export default class Pawn extends Component {
   fire() {
     if (Date.now() - this.lastFire > this.COOLDOWN) {
       this.lastFire = Date.now();
-      let bullet = this.scene.newEntityWithComponents([Transform, Bullet, CircleShape, Physics]);
-      bullet.parent = this.parent;
+      let bullet = this.scene.newPrefab(Bullet, this.parent);
       bullet.transform.x = this.transform.x + this.BARREL_POS * Math.cos(this.transform.theta);
       bullet.transform.y = this.transform.y + this.BARREL_POS * Math.sin(this.transform.theta);
-      bullet.physics.vx = Bullet.SPEED * Math.cos(this.transform.theta);
-      bullet.physics.vy = Bullet.SPEED * Math.sin(this.transform.theta);
+      bullet.physics.vx = BulletComp.SPEED * Math.cos(this.transform.theta);
+      bullet.physics.vy = BulletComp.SPEED * Math.sin(this.transform.theta);
       return bullet;
     }
   }
