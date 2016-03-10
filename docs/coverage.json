@@ -1,7 +1,7 @@
 {
-  "coverage": "9.18%",
-  "expectCount": 185,
-  "actualCount": 17,
+  "coverage": "9.75%",
+  "expectCount": 246,
+  "actualCount": 24,
   "files": {
     "src/components/Camera.js": {
       "expectCount": 4,
@@ -9,8 +9,8 @@
       "undocumentLines": [
         8,
         10,
-        26,
-        30
+        23,
+        27
       ]
     },
     "src/components/CircleShape.js": {
@@ -21,10 +21,11 @@
       ]
     },
     "src/Client.js": {
-      "expectCount": 7,
+      "expectCount": 8,
       "actualCount": 0,
       "undocumentLines": [
         12,
+        16,
         14,
         33,
         35,
@@ -34,10 +35,12 @@
       ]
     },
     "src/ClientHandle.js": {
-      "expectCount": 8,
+      "expectCount": 10,
       "actualCount": 0,
       "undocumentLines": [
         5,
+        8,
+        10,
         16,
         7,
         32,
@@ -48,10 +51,16 @@
       ]
     },
     "src/Component.js": {
-      "expectCount": 21,
+      "expectCount": 27,
       "actualCount": 0,
       "undocumentLines": [
         6,
+        17,
+        63,
+        9,
+        8,
+        11,
+        10,
         57,
         36,
         53,
@@ -75,12 +84,24 @@
       ]
     },
     "src/Entity.js": {
-      "expectCount": 22,
+      "expectCount": 34,
       "actualCount": 0,
       "undocumentLines": [
         5,
+        110,
+        13,
+        8,
+        17,
+        16,
+        12,
+        14,
+        10,
+        11,
+        104,
+        9,
+        15,
         85,
-        111,
+        98,
         45,
         7,
         128,
@@ -90,11 +111,11 @@
         132,
         41,
         49,
-        141,
-        148,
-        156,
-        20,
+        146,
+        153,
+        161,
         27,
+        20,
         61,
         117,
         53,
@@ -103,31 +124,38 @@
       ]
     },
     "src/Game.js": {
-      "expectCount": 15,
+      "expectCount": 19,
       "actualCount": 0,
       "undocumentLines": [
-        4,
         6,
-        34,
-        22,
-        77,
-        57,
-        18,
+        10,
         11,
-        50,
-        30,
-        45,
-        14,
-        61,
-        65,
-        69
+        9,
+        12,
+        8,
+        43,
+        31,
+        87,
+        63,
+        27,
+        13,
+        59,
+        39,
+        54,
+        23,
+        71,
+        75,
+        79
       ]
     },
     "src/GameModel.js": {
-      "expectCount": 10,
+      "expectCount": 13,
       "actualCount": 0,
       "undocumentLines": [
         5,
+        9,
+        8,
+        10,
         16,
         61,
         69,
@@ -140,10 +168,11 @@
       ]
     },
     "src/systems/GraphicSystem.js": {
-      "expectCount": 5,
+      "expectCount": 6,
       "actualCount": 0,
       "undocumentLines": [
         4,
+        8,
         11,
         6,
         16,
@@ -151,10 +180,17 @@
       ]
     },
     "src/drivers/Graphics.js": {
-      "expectCount": 10,
+      "expectCount": 17,
       "actualCount": 0,
       "undocumentLines": [
         18,
+        86,
+        74,
+        23,
+        81,
+        21,
+        22,
+        73,
         27,
         64,
         20,
@@ -174,10 +210,15 @@
       ]
     },
     "src/components/Input.js": {
-      "expectCount": 8,
+      "expectCount": 13,
       "actualCount": 2,
       "undocumentLines": [
         9,
+        101,
+        28,
+        21,
+        22,
+        109,
         121,
         126,
         46,
@@ -198,10 +239,14 @@
       "undocumentLines": []
     },
     "src/NetCodec.js": {
-      "expectCount": 8,
+      "expectCount": 12,
       "actualCount": 0,
       "undocumentLines": [
         3,
+        10,
+        8,
+        6,
+        9,
         5,
         40,
         69,
@@ -212,13 +257,15 @@
       ]
     },
     "src/systems/PhysicSystem.js": {
-      "expectCount": 9,
+      "expectCount": 11,
       "actualCount": 0,
       "undocumentLines": [
         4,
+        11,
+        8,
         19,
-        34,
         38,
+        34,
         9,
         6,
         10,
@@ -227,10 +274,11 @@
       ]
     },
     "src/components/Physics.js": {
-      "expectCount": 3,
+      "expectCount": 4,
       "actualCount": 0,
       "undocumentLines": [
         6,
+        16,
         8,
         20
       ]
@@ -262,28 +310,27 @@
       ]
     },
     "src/Scene.js": {
-      "expectCount": 12,
-      "actualCount": 0,
+      "expectCount": 16,
+      "actualCount": 7,
       "undocumentLines": [
-        10,
-        45,
-        12,
-        75,
-        57,
+        35,
+        34,
         36,
-        49,
-        53,
-        61,
-        65,
-        18,
-        22
+        81,
+        33,
+        93,
+        72,
+        85,
+        89
       ]
     },
     "src/Server.js": {
-      "expectCount": 5,
+      "expectCount": 7,
       "actualCount": 1,
       "undocumentLines": [
         5,
+        8,
+        10,
         6,
         35,
         33
@@ -298,9 +345,10 @@
       ]
     },
     "src/components/Sprite.js": {
-      "expectCount": 4,
+      "expectCount": 5,
       "actualCount": 2,
       "undocumentLines": [
+        16,
         13,
         20
       ]
@@ -314,10 +362,16 @@
       ]
     },
     "src/Timer.js": {
-      "expectCount": 5,
+      "expectCount": 11,
       "actualCount": 0,
       "undocumentLines": [
         5,
+        8,
+        10,
+        12,
+        15,
+        9,
+        11,
         7,
         39,
         29,

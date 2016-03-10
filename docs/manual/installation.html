@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../">
-  <title data-ice="title">Manual</title>
+  <title data-ice="title">Installation</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -76,50 +76,43 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown manual-toc-root">
-  
-<div data-ice="manual" data-toc-name="installation">
-    <h1 class="manual-toc-title"><a href="manual/installation.html" data-ice="title">Installation</a></h1>
-    <ul class="manual-toc">
-      
-    <li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="manual/installation.html#installing-savannah" data-ice="link">Installing Savannah</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/installation.html#node-js" data-ice="link">Node.js</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/installation.html#git" data-ice="link">git</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/installation.html#savannah" data-ice="link">Savannah</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/installation.html#editor" data-ice="link">Editor</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/installation.html#what-s-next" data-ice="link">What&apos;s next</a></li>
-</ul>
+<div class="content" data-ice="content"><div class="github-markdown">
+  <div class="manual-breadcrumb-list">
+    <a href="./manual/./index.html">Manual</a>
+    <span>&#xBB;</span>
+    <span data-ice="title">Installation</span>
   </div>
-<div data-ice="manual" data-toc-name="tutorial">
-    <h1 class="manual-toc-title"><a href="manual/tutorial.html" data-ice="title">Tutorial</a></h1>
-    <ul class="manual-toc">
-      
-    <li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="manual/tutorial.html#getting-started" data-ice="link">Getting started</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#creating-a-project" data-ice="link">Creating a project</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#experiment" data-ice="link">Experiment</a></li>
-<li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#bouncing-bullets" data-ice="link">Bouncing bullets</a></li>
-<li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#fps-camera" data-ice="link">FPS camera</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#what-s-next" data-ice="link">What&apos;s next</a></li>
-<li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="manual/tutorial.html#concepts" data-ice="link">Concepts</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#networking" data-ice="link">Networking</a></li>
-<li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#state" data-ice="link">State</a></li>
-<li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#rpc" data-ice="link">RPC</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#entity-component-model" data-ice="link">Entity - Component model</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#prefabs" data-ice="link">prefabs</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#events" data-ice="link">Events</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#scenes" data-ice="link">Scenes</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#lifecycle" data-ice="link">Lifecycle</a></li>
+  <div data-ice="content"><h1 id="installing-savannah">Installing Savannah</h1>
+<p>This page describes how to install Savannah. This is a prerequisite for anything
+you plan to do with Savannah.</p>
+<h2 id="node-js">Node.js</h2>
+<p>First, install nodejs.  Go to <a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a> and choose the package matching 
+your operating system.</p>
+<p><strong>note for Ubuntu users</strong>: You must install nodejs through nvm. It&apos;s the only reasonnable way to install nodejs on Ubuntu.<br>First install nvm as described in the <a href="https://github.com/creationix/nvm#install-script">installation</a>
+section. Then run:<br><code>nvm install 5.0</code> to install nodejs v5.0 through nvm<br><code>nvm use 5.0</code> to use nodejs v5.0<br><em>note</em>: You might need to run <code>nvm use 5.0</code> each time you launch a new shell to
+tell nvm you are using nodejs version 5.0.</p>
+<h2 id="git">git</h2>
+<p>This step is only necessary while the project is in prerelease phase: There is no
+stable branch at the moment so you must install the package from the sources.<br>(at some point it will be available as an npm package)</p>
+<p>To get the sources, first <a href="https://git-scm.com/downloads">install git</a> (be sure to download the cli-tool, not the graphical
+interface).</p>
+<h2 id="savannah">Savannah</h2>
+<p>node.js and git are the only prerequisites to Savannah. From there, all steps are common
+no matter your operating system.</p>
+<p>In your working directory, clone the Savannah repository<br><code>git clone https://github.com/hmil/savannah.git</code><br>( or <code>git clone git@github.com/hmil.savannah.git</code> if you have setup ssh keys with github)</p>
+<p>Then install the module <em>via</em> npm:<br><code>npm install -g ./savannah/savannah-cli</code></p>
+<h2 id="editor">Editor</h2>
+<p>While you can use any decent code editor to edit Savannah projects, the only officially
+supported setup is the following:</p>
+<p><a href="https://atom.io/">Atom</a> with the following plugin (which can be installed within atom&apos;s settings view):</p>
+<ul>
+<li><a href="https://github.com/sindresorhus/atom-jshint">jshint</a> (To highlight possible errors in your code)</li>
 </ul>
-  </div>
-<div data-ice="manual" data-toc-name="reference">
-    <h1 class="manual-toc-title"><a href="identifiers.html" data-ice="title">Reference</a></h1>
-    <ul class="manual-toc">
-      
-    <li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="identifiers.html#class" data-ice="link">Class</a></li>
-<li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="identifiers.html#function" data-ice="link">Function</a></li>
-<li data-ice="manualNav" class="indent-h1"><span class="manual-dot"></span><a href="identifiers.html#variable" data-ice="link">Variable</a></li>
-</ul>
-  </div>
+<h2 id="what-s-next">What&apos;s next</h2>
+<p>All right, you&apos;ve just setup a decent development environmnet for Savannah. Head-on to
+the <a href="./manual/file:///data/workspace/savannah/savannah/docs/manual/tutorial.html">tutorial</a> to get
+started!</p>
+</div>
 </div>
 </div>
 

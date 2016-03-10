@@ -977,7 +977,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import { uid } from './utils.js';\nimport { Log } from './Log.js';\nimport Physics from './components/Physics.js';\n\nexport default class Entity {\n\n  constructor(scene, id = null) {\n    this._components = {};\n    this._scene = scene;\n    this._parent = null;\n    this._parentId = null;\n    this._id = (id !== null) ? id : uid();\n    this._compIdCounter = 0;\n    this._isSynchronized = true;\n    this._transform = null;\n    this._handlers = {};\n    this._destroyed = false;\n  }\n\n  get parent() {\n    if (this._parent == null) {\n      this._parent = this.scene.model.getEntity(this._parentId);\n    }\n    return this._parent;\n  }\n\n  set parent(arg) {\n    if (typeof arg === 'string') {\n      this._parent = null;\n      this._parentId = arg;\n    } else if (arg !== null && typeof arg === 'object') {\n      var entity = arg.entity || entity; // Links to entity even if component is passed\n      this._parent = arg;\n      this._parentId = arg.id;\n    } else {\n      this._parent = null;\n      this._parentId = null;\n    }\n  }\n\n  get id() {\n    return this._id;\n  }\n\n  get components() {\n    return this._components;\n  }\n\n  get isSynchronized() {\n    return this._isSynchronized;\n  }\n\n  get scene() {\n    return this._scene;\n  }\n\n  get transform() {\n    return this._transform;\n  }\n\n  get physics() {\n    return this.getComponent(Physics);\n  }\n\n  get destroyed() {\n    return this._destroyed;\n  }\n\n  enableNetworking() {\n    this._isSynchronized = true;\n  }\n\n  disableNetworking() {\n    this._isSynchronized = false;\n  }\n\n  triggerEvent(evt, data) {\n    if (this._handlers[evt] != null) {\n      for (const h of this._handlers[evt]) {\n        h(data);\n      }\n    }\n  }\n\n  addComponent(Comp, id = null) {\n    var comp_id = (id == null) ? uid() : id;\n    var comp = new Comp(this, comp_id);\n    this._components[comp_id] = comp;\n    this._registerComponentHandlers(comp);\n\n    // Special case optimization for extremely common components\n    if (Comp.name === 'Transform') {\n      this._transform = comp;\n    }\n    return comp;\n  }\n\n  _registerComponentHandlers(comp) {\n    for (const evt of Object.keys(comp.eventHandlers)) {\n      this._addEventHandler(evt, comp.eventHandlers[evt]);\n    }\n  }\n\n  _addEventHandler(evt, fn) {\n    if (typeof this._handlers[evt] === 'undefined') {\n      this._handlers[evt] = [];\n    }\n    this._handlers[evt].push(fn);\n  }\n\n  addComponents(Comps) {\n    for (let Comp of Comps) {\n      this.addComponent(Comp);\n    }\n  }\n  \n  removeComponent(id) {\n    throw new Error('Removing components is not supported');\n    // Cannot remove component for now because we would need to remove associated event handlers\n\n    // const comp = this._components[id];\n    // if (comp === this._transform) {\n    //   this._transform = null;\n    // }\n    // delete this._components[id];\n  }\n\n  destroy() {\n    this._destroyed = true;\n  }\n\n  getComponent(Type) {\n    for (const i of Object.keys(this._components)) {\n      const comp = this._components[i];\n      if (comp.constructor.name === Type.name) {\n        return comp;\n      }\n    }\n  }\n\n  onCreate() {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      this._components[i].onCreate();\n    }\n  }\n\n  onDestroy() {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      this._components[i].onDestroy();\n    }\n  }\n\n\n  onUpdate(dt) {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      if (component.enabled) {\n        this._components[i].onUpdate(dt);\n      }\n    }\n  }\n}\n"
+    "content": "import { uid } from './utils.js';\nimport { Log } from './Log.js';\nimport Physics from './components/Physics.js';\n\nexport default class Entity {\n\n  constructor(scene, id = null) {\n    this._components = {};\n    this._scene = scene;\n    this._parent = null;\n    this._parentId = null;\n    this._id = (id !== null) ? id : uid();\n    this._compIdCounter = 0;\n    this._isSynchronized = true;\n    this._transform = null;\n    this._handlers = {};\n    this._destroyed = false;\n  }\n\n  get parent() {\n    if (this._parent == null) {\n      this._parent = this.scene.model.getEntity(this._parentId);\n    }\n    return this._parent;\n  }\n\n  set parent(arg) {\n    if (typeof arg === 'string') {\n      this._parent = null;\n      this._parentId = arg;\n    } else if (arg !== null && typeof arg === 'object') {\n      var entity = arg.entity || entity; // Links to entity even if component is passed\n      this._parent = arg;\n      this._parentId = arg.id;\n    } else {\n      this._parent = null;\n      this._parentId = null;\n    }\n  }\n\n  get id() {\n    return this._id;\n  }\n\n  get components() {\n    return this._components;\n  }\n\n  get isSynchronized() {\n    return this._isSynchronized;\n  }\n\n  get scene() {\n    return this._scene;\n  }\n\n  get transform() {\n    return this._transform;\n  }\n\n  get physics() {\n    return this.getComponent(Physics);\n  }\n\n  get destroyed() {\n    return this._destroyed;\n  }\n\n  enableNetworking() {\n    this._isSynchronized = true;\n  }\n\n  disableNetworking() {\n    this._isSynchronized = false;\n  }\n\n  triggerEvent(evt, data) {\n    if (this._handlers[evt] != null) {\n      for (const h of this._handlers[evt]) {\n        h(data);\n      }\n    }\n  }\n\n  addComponent(Comp, id = null) {\n    var comp_id = (id == null) ? uid() : id;\n    var comp = new Comp(this, comp_id);\n    this._components[comp_id] = comp;\n    this._registerComponentHandlers(comp);\n\n    // Special case optimization for extremely common components\n    if (Comp.name === 'Transform') {\n      this._transform = comp;\n    }\n    return comp;\n  }\n\n  addComponents(Comps) {\n    for (let Comp of Comps) {\n      this.addComponent(Comp);\n    }\n  }\n\n  _registerComponentHandlers(comp) {\n    for (const evt of Object.keys(comp.eventHandlers)) {\n      this._addEventHandler(evt, comp.eventHandlers[evt]);\n    }\n  }\n\n  _addEventHandler(evt, fn) {\n    if (typeof this._handlers[evt] === 'undefined') {\n      this._handlers[evt] = [];\n    }\n    this._handlers[evt].push(fn);\n  }\n\n  removeComponent(id) {\n    throw new Error('Removing components is not supported');\n    // Cannot remove component for now because we would need to remove associated event handlers\n\n    // const comp = this._components[id];\n    // if (comp === this._transform) {\n    //   this._transform = null;\n    // }\n    // delete this._components[id];\n  }\n\n  destroy() {\n    this._destroyed = true;\n  }\n\n  getComponent(Type) {\n    var name = Type;\n    if (typeof Type !== 'string') {\n      name = Type.name;\n    }\n    name = name.toLowerCase();\n    for (const i of Object.keys(this._components)) {\n      const comp = this._components[i];\n      if (comp.constructor.name.toLowerCase() === name) {\n        return comp;\n      }\n    }\n  }\n\n  onCreate() {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      this._components[i].onCreate();\n    }\n  }\n\n  onDestroy() {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      this._components[i].onDestroy();\n    }\n  }\n\n\n  onUpdate(dt) {\n    for (let i of Object.keys(this._components)) {\n      const component = this._components[i];\n      if (component.enabled) {\n        this._components[i].onUpdate(dt);\n      }\n    }\n  }\n}\n"
   },
   {
     "__docId__": 52,
@@ -1657,16 +1657,16 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "_registerComponentHandlers",
+    "name": "addComponents",
     "memberof": "src/Entity.js~Entity",
-    "longname": "src/Entity.js~Entity#_registerComponentHandlers",
+    "longname": "src/Entity.js~Entity#addComponents",
     "access": null,
     "description": null,
     "lineNumber": 98,
     "undocument": true,
     "params": [
       {
-        "name": "comp",
+        "name": "Comps",
         "types": [
           "*"
         ]
@@ -1679,22 +1679,16 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "_addEventHandler",
+    "name": "_registerComponentHandlers",
     "memberof": "src/Entity.js~Entity",
-    "longname": "src/Entity.js~Entity#_addEventHandler",
+    "longname": "src/Entity.js~Entity#_registerComponentHandlers",
     "access": null,
     "description": null,
     "lineNumber": 104,
     "undocument": true,
     "params": [
       {
-        "name": "evt",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "fn",
+        "name": "comp",
         "types": [
           "*"
         ]
@@ -1707,16 +1701,22 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "addComponents",
+    "name": "_addEventHandler",
     "memberof": "src/Entity.js~Entity",
-    "longname": "src/Entity.js~Entity#addComponents",
+    "longname": "src/Entity.js~Entity#_addEventHandler",
     "access": null,
     "description": null,
-    "lineNumber": 111,
+    "lineNumber": 110,
     "undocument": true,
     "params": [
       {
-        "name": "Comps",
+        "name": "evt",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "fn",
         "types": [
           "*"
         ]
@@ -1816,7 +1816,7 @@
     "longname": "src/Entity.js~Entity#onCreate",
     "access": null,
     "description": null,
-    "lineNumber": 141,
+    "lineNumber": 146,
     "undocument": true,
     "params": [],
     "generator": false
@@ -1831,7 +1831,7 @@
     "longname": "src/Entity.js~Entity#onDestroy",
     "access": null,
     "description": null,
-    "lineNumber": 148,
+    "lineNumber": 153,
     "undocument": true,
     "params": [],
     "generator": false
@@ -1846,7 +1846,7 @@
     "longname": "src/Entity.js~Entity#onUpdate",
     "access": null,
     "description": null,
-    "lineNumber": 156,
+    "lineNumber": 161,
     "undocument": true,
     "params": [
       {
@@ -1869,7 +1869,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import { Log } from './Log.js';\nimport Timer from './Timer.js';\n\nclass Game {\n\n  constructor() {\n    this._scenes = {};\n    this._activeScenes = {};\n    this._components = {};\n    this._timer = new Timer((dt) => this.update(dt));\n    this.playerId = null;\n  }\n\n  get scenes() {\n    return this._activeScenes;\n  }\n\n  getScene(id) {\n    return this._activeScenes[id];\n  }\n\n  get currentScene() {\n    var keys = Object.keys(this._activeScenes);\n    if (keys.length > 1) {\n      Log.warn('Game has multiple active scenes, picking the first one as \"current\"');\n    }\n    return (keys.length === 0) ? null : this._activeScenes[keys[0]];\n  }\n\n  registerScene(Scene) {\n    this._scenes[Scene.name] = Scene;\n  }\n\n  createScene(name, id = null) {\n    if (!this._scenes.hasOwnProperty(name)) {\n      throw new Error(`Scene ${name} is not registered. Use game.registerScene() before loading a scene`);\n    }\n    Log.info(`Creating scene ${name}`);\n    var scene = new this._scenes[name](id);\n    this._activeScenes[scene.id] = scene;\n    scene.onCreate();\n    return scene;\n  }\n\n  removeScene(name) {\n\n  }\n\n\n  registerComponent(Comp) {\n    if (Comp.name in this._components) {\n      throw new Error(`Trying to register two components with the same name: ${Comp.name}`);\n    }\n    this._components[Comp.name] = Comp;\n  }\n\n  getComponent(name) {\n    return this._components[name];\n  }\n\n  start() {\n    this._timer.start();\n  }\n\n  stop() {\n    this._timer.stop();\n  }\n\n  update(dt) {\n    for (let i of Object.keys(this._activeScenes)) {\n      this._activeScenes[i].onUpdate(dt);\n    }\n  }\n\n}\n\nexport default new Game();\n"
+    "content": "import { Log } from './Log.js';\nimport Timer from './Timer.js';\n\nimport * as prefabs from '../prefabs.js';\n\nclass Game {\n\n  constructor() {\n    this._scenes = {};\n    this._activeScenes = {};\n    this._components = {};\n    this._timer = new Timer((dt) => this.update(dt));\n    this.playerId = null;\n\n    // Registering prefab components\n    for (const i of Object.keys(prefabs)) {\n      for (const compDef of prefabs[i]) {\n        this.registerComponent(compDef.comp);\n      }\n    }\n  }\n\n  get scenes() {\n    return this._activeScenes;\n  }\n\n  getScene(id) {\n    return this._activeScenes[id];\n  }\n\n  get currentScene() {\n    var keys = Object.keys(this._activeScenes);\n    if (keys.length > 1) {\n      Log.warn('Game has multiple active scenes, picking the first one as \"current\"');\n    }\n    return (keys.length === 0) ? null : this._activeScenes[keys[0]];\n  }\n\n  registerScene(Scene) {\n    this._scenes[Scene.name] = Scene;\n  }\n\n  createScene(name, id = null) {\n    if (!this._scenes.hasOwnProperty(name)) {\n      throw new Error(`Scene ${name} is not registered. Use game.registerScene() before loading a scene`);\n    }\n    Log.info(`Creating scene ${name}`);\n    var scene = new this._scenes[name](id);\n    this._activeScenes[scene.id] = scene;\n    scene.onCreate();\n    return scene;\n  }\n\n  removeScene(name) {\n\n  }\n\n\n  registerComponent(Comp) {\n    this._components[Comp.name] = Comp;\n  }\n\n  getComponent(name) {\n    if (!this._components.hasOwnProperty(name)) {\n      console.log(this._components);\n      throw new Error(`Component ${name} is not registered!`);\n    }\n    return this._components[name];\n  }\n\n  start() {\n    this._timer.start();\n  }\n\n  stop() {\n    this._timer.stop();\n  }\n\n  update(dt) {\n    for (let i of Object.keys(this._activeScenes)) {\n      this._activeScenes[i].onUpdate(dt);\n    }\n  }\n\n}\n\nexport default new Game();\n"
   },
   {
     "__docId__": 98,
@@ -1884,7 +1884,7 @@
     "importPath": "./src/Game.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 4,
+    "lineNumber": 6,
     "pseudoExport": true,
     "undocument": true,
     "interface": false
@@ -1899,7 +1899,7 @@
     "longname": "src/Game.js~Game#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 6,
+    "lineNumber": 8,
     "undocument": true,
     "params": [],
     "generator": false
@@ -1914,7 +1914,7 @@
     "longname": "src/Game.js~Game#_scenes",
     "access": null,
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 9,
     "undocument": true,
     "type": {
       "types": [
@@ -1932,7 +1932,7 @@
     "longname": "src/Game.js~Game#_activeScenes",
     "access": null,
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 10,
     "undocument": true,
     "type": {
       "types": [
@@ -1950,7 +1950,7 @@
     "longname": "src/Game.js~Game#_components",
     "access": null,
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 11,
     "undocument": true,
     "type": {
       "types": [
@@ -1968,7 +1968,7 @@
     "longname": "src/Game.js~Game#_timer",
     "access": null,
     "description": null,
-    "lineNumber": 10,
+    "lineNumber": 12,
     "undocument": true,
     "type": {
       "types": [
@@ -1986,7 +1986,7 @@
     "longname": "src/Game.js~Game#playerId",
     "access": null,
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 13,
     "undocument": true,
     "type": {
       "types": [
@@ -2004,7 +2004,7 @@
     "longname": "src/Game.js~Game#scenes",
     "access": null,
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -2023,7 +2023,7 @@
     "longname": "src/Game.js~Game#getScene",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 27,
     "undocument": true,
     "params": [
       {
@@ -2050,7 +2050,7 @@
     "longname": "src/Game.js~Game#currentScene",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -2069,7 +2069,7 @@
     "longname": "src/Game.js~Game#registerScene",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 39,
     "undocument": true,
     "params": [
       {
@@ -2091,7 +2091,7 @@
     "longname": "src/Game.js~Game#createScene",
     "access": null,
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 43,
     "undocument": true,
     "params": [
       {
@@ -2127,7 +2127,7 @@
     "longname": "src/Game.js~Game#removeScene",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 54,
     "undocument": true,
     "params": [
       {
@@ -2149,7 +2149,7 @@
     "longname": "src/Game.js~Game#registerComponent",
     "access": null,
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 59,
     "undocument": true,
     "params": [
       {
@@ -2171,7 +2171,7 @@
     "longname": "src/Game.js~Game#getComponent",
     "access": null,
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 63,
     "undocument": true,
     "params": [
       {
@@ -2198,7 +2198,7 @@
     "longname": "src/Game.js~Game#start",
     "access": null,
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 71,
     "undocument": true,
     "params": [],
     "generator": false
@@ -2213,7 +2213,7 @@
     "longname": "src/Game.js~Game#stop",
     "access": null,
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 75,
     "undocument": true,
     "params": [],
     "generator": false
@@ -2228,7 +2228,7 @@
     "longname": "src/Game.js~Game#update",
     "access": null,
     "description": null,
-    "lineNumber": 69,
+    "lineNumber": 79,
     "undocument": true,
     "params": [
       {
@@ -2253,7 +2253,7 @@
     "importPath": "./src/Game.js",
     "importStyle": "game",
     "description": null,
-    "lineNumber": 77,
+    "lineNumber": 87,
     "undocument": true,
     "type": {
       "types": [
@@ -3314,31 +3314,10 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import Entity from './Entity.js';\nimport GameModel from './GameModel.js';\nimport { uid } from './utils.js';\nimport { Log } from './Log.js';\nimport GraphicSystem from './systems/GraphicSystem.js';\n\n/* globals Int8Array */\nconst emptyArray = new Int8Array(0);\n\nexport default class Scene {\n\n  constructor(id = null) {\n    this._model = new GameModel(this);\n    this._id = (id != null) ? id : uid();\n    this._systems = [];\n  }\n\n  onCreate() {\n    this.addSystem(new GraphicSystem());\n  }\n\n  onUpdate(dt) {\n    for (const sys of this._systems) {\n      sys.onUpdate(dt);\n    }\n    this._model.update(dt);\n    for (const i of Object.keys(this._model.entities)) {\n      const entity = this._model.entities[i];\n      if (entity.destroyed) {\n        entity.onDestroy();\n        this.model.removeEntity(entity);\n      }\n    }\n  }\n\n  getSystem(Type) {\n    for (const i of Object.keys(this._systems)) {\n      const sys = this._systems[i];\n      if (sys.constructor.name === Type.name) {\n        return sys;\n      }\n    }\n  }\n\n  addSystem(system) {\n    this._systems.push(system);\n  }\n\n  get id() {\n    return this._id;\n  }\n\n  get model() {\n    return this._model;\n  }\n\n  get entities() {\n    return this._model.entities;\n  }\n\n  newEntity(parent = null) {\n    return this.newEntityWithComponents(emptyArray, parent);\n  }\n\n  newEntityWithComponents(comps, parent = null) {\n    Log.info('creating entity');\n    var entity = new Entity(this);\n    entity.parent = parent;\n    this._model.addEntity(entity);\n    entity.addComponents(comps);\n    entity.onCreate();\n    return entity;\n  }\n\n  destroy(entity) {\n    this._model.removeEntity(entity);\n    entity.onDestroy();\n  }\n\n}\n"
+    "content": "import Entity from './Entity.js';\nimport GameModel from './GameModel.js';\nimport { uid } from './utils.js';\nimport { Log } from './Log.js';\nimport GraphicSystem from './systems/GraphicSystem.js';\n\n\n/**\n * Base class for game scenes.\n *\n * A scene allows to isolate different parts of the game. For instance a menu\n * could be a scene, a game level can be a scene.\n *\n * Entities and components from different scenes cannot interact.\n *\n * Most basic games will only require a single scene class.\n *\n * ## Usage\n *\n * Scenes should be created as subclasses of this class in the /scenes folder.\n * They should implement {@link Scene#onCreate} to populate themselves with entities.\n *\n * @example\n * export default class MainScene extends Scene {\n *   onCreate() {\n *     super.onCreate();\n *     this.newPrefab(Camera);\n *   }\n * }\n */\nexport default class Scene {\n\n  constructor(id = null) {\n    this._model = new GameModel(this);\n    this._id = (id != null) ? id : uid();\n    this._systems = [];\n  }\n\n  /**\n   * Called upon scene instantiation.\n   *\n   * Subclasses should override this method and call super.onCreate().\n   *\n   * Default implementation adds a Graphic system to the scene\n   *\n   * @protected\n   */\n  onCreate() {\n    this.addSystem(new GraphicSystem());\n  }\n\n  /**\n   * Called once per game loop\n   *\n   * Subclasses overriding this method **must** call super.onUpdate(dt)\n   * @protected\n   */\n  onUpdate(dt) {\n    for (const sys of this._systems) {\n      sys.onUpdate(dt);\n    }\n    this._model.update(dt);\n    for (const i of Object.keys(this._model.entities)) {\n      const entity = this._model.entities[i];\n      if (entity.destroyed) {\n        entity.onDestroy();\n        this.model.removeEntity(entity);\n      }\n    }\n  }\n\n  getSystem(Type) {\n    for (const i of Object.keys(this._systems)) {\n      const sys = this._systems[i];\n      if (sys.constructor.name === Type.name) {\n        return sys;\n      }\n    }\n  }\n\n  addSystem(system) {\n    this._systems.push(system);\n  }\n\n  get id() {\n    return this._id;\n  }\n\n  get model() {\n    return this._model;\n  }\n\n  get entities() {\n    return this._model.entities;\n  }\n\n  /**\n   * @private\n   */\n  newEntity(parent = null) {\n    const entity = new Entity(this);\n    entity.parent = parent;\n    this._model.addEntity(entity);\n    return entity;\n  }\n\n\n  /**\n   * Creates a new entity in this scene with comps attached.\n   *\n   * note: DO NOT USE THIS METHOD. Use {@link Scene#newPrefab} instead.  \n   * (The reason is that dependencies may not be properly loaded on the\n   * client when using this method)\n   *\n   * @private\n   * @param  {Component#constructor[]} comps         description\n   * @param  {Entity} [parent=null] The parent entity\n   * @return {Entity} The instantiated entity\n   */\n  newEntityWithComponents(comps, parent = null) {\n    const entity = this.newEntity(parent);\n    entity.addComponents(comps);\n    entity.onCreate();\n    return entity;\n  }\n\n\n  /**\n   * Instantiate a new prefab in this scene\n   *\n   * @param  {Object} prefab The prefab to instantiate.\n   * @param  {Entity} [parent=null] The parent of the new entity\n   * @return {type} The newly created entity\n   */\n  newPrefab(prefab, parent = null) {\n    const entity = this.newEntity(parent);\n    for (const compDef of prefab) {\n      const comp = entity.addComponent(compDef.comp);\n      for (const i in compDef.attrs) {\n        comp[i] = compDef.attrs[i];\n      }\n    }\n    entity.onCreate();\n    return entity;\n  }\n\n  /**\n   * @private\n   */\n  destroy(entity) {\n    entity.onDestroy();\n    this._model.removeEntity(entity);\n  }\n\n}\n"
   },
   {
     "__docId__": 168,
-    "kind": "variable",
-    "static": true,
-    "variation": null,
-    "name": "emptyArray",
-    "memberof": "src/Scene.js",
-    "longname": "src/Scene.js~emptyArray",
-    "access": null,
-    "export": false,
-    "importPath": "./src/Scene.js",
-    "importStyle": null,
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "type": {
-      "types": [
-        "Int8Array"
-      ]
-    }
-  },
-  {
-    "__docId__": 169,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3349,13 +3328,15 @@
     "export": true,
     "importPath": "./src/Scene.js",
     "importStyle": "Scene",
-    "description": null,
-    "lineNumber": 10,
-    "undocument": true,
+    "description": "Base class for game scenes.\n\nA scene allows to isolate different parts of the game. For instance a menu\ncould be a scene, a game level can be a scene.\n\nEntities and components from different scenes cannot interact.\n\nMost basic games will only require a single scene class.\n\n## Usage\n\nScenes should be created as subclasses of this class in the /scenes folder.\nThey should implement {@link Scene#onCreate} to populate themselves with entities.",
+    "examples": [
+      "export default class MainScene extends Scene {\n  onCreate() {\n    super.onCreate();\n    this.newPrefab(Camera);\n  }\n}"
+    ],
+    "lineNumber": 31,
     "interface": false
   },
   {
-    "__docId__": 170,
+    "__docId__": 169,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3364,7 +3345,7 @@
     "longname": "src/Scene.js~Scene#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 33,
     "undocument": true,
     "params": [
       {
@@ -3380,7 +3361,7 @@
     "generator": false
   },
   {
-    "__docId__": 171,
+    "__docId__": 170,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3389,7 +3370,25 @@
     "longname": "src/Scene.js~Scene#_model",
     "access": null,
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 171,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_id",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#_id",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -3402,12 +3401,12 @@
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_id",
+    "name": "_systems",
     "memberof": "src/Scene.js~Scene",
-    "longname": "src/Scene.js~Scene#_id",
+    "longname": "src/Scene.js~Scene#_systems",
     "access": null,
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -3417,49 +3416,29 @@
   },
   {
     "__docId__": 173,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_systems",
-    "memberof": "src/Scene.js~Scene",
-    "longname": "src/Scene.js~Scene#_systems",
-    "access": null,
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 174,
     "kind": "method",
     "static": false,
     "variation": null,
     "name": "onCreate",
     "memberof": "src/Scene.js~Scene",
     "longname": "src/Scene.js~Scene#onCreate",
-    "access": null,
-    "description": null,
-    "lineNumber": 18,
-    "undocument": true,
+    "access": "protected",
+    "description": "Called upon scene instantiation.\n\nSubclasses should override this method and call super.onCreate().\n\nDefault implementation adds a Graphic system to the scene",
+    "lineNumber": 48,
     "params": [],
     "generator": false
   },
   {
-    "__docId__": 175,
+    "__docId__": 174,
     "kind": "method",
     "static": false,
     "variation": null,
     "name": "onUpdate",
     "memberof": "src/Scene.js~Scene",
     "longname": "src/Scene.js~Scene#onUpdate",
-    "access": null,
-    "description": null,
-    "lineNumber": 22,
-    "undocument": true,
+    "access": "protected",
+    "description": "Called once per game loop\n\nSubclasses overriding this method **must** call super.onUpdate(dt)",
+    "lineNumber": 58,
     "params": [
       {
         "name": "dt",
@@ -3471,7 +3450,7 @@
     "generator": false
   },
   {
-    "__docId__": 176,
+    "__docId__": 175,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3480,7 +3459,7 @@
     "longname": "src/Scene.js~Scene#getSystem",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 72,
     "undocument": true,
     "params": [
       {
@@ -3498,7 +3477,7 @@
     "generator": false
   },
   {
-    "__docId__": 177,
+    "__docId__": 176,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3507,7 +3486,7 @@
     "longname": "src/Scene.js~Scene#addSystem",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 81,
     "undocument": true,
     "params": [
       {
@@ -3520,7 +3499,7 @@
     "generator": false
   },
   {
-    "__docId__": 178,
+    "__docId__": 177,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3529,7 +3508,26 @@
     "longname": "src/Scene.js~Scene#id",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 85,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 178,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "model",
+    "memberof": "src/Scene.js~Scene",
+    "longname": "src/Scene.js~Scene#model",
+    "access": null,
+    "description": null,
+    "lineNumber": 89,
     "undocument": true,
     "type": {
       "types": [
@@ -3543,12 +3541,12 @@
     "kind": "get",
     "static": false,
     "variation": null,
-    "name": "model",
+    "name": "entities",
     "memberof": "src/Scene.js~Scene",
-    "longname": "src/Scene.js~Scene#model",
+    "longname": "src/Scene.js~Scene#entities",
     "access": null,
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 93,
     "undocument": true,
     "type": {
       "types": [
@@ -3559,17 +3557,27 @@
   },
   {
     "__docId__": 180,
-    "kind": "get",
+    "kind": "method",
     "static": false,
     "variation": null,
-    "name": "entities",
+    "name": "newEntity",
     "memberof": "src/Scene.js~Scene",
-    "longname": "src/Scene.js~Scene#entities",
-    "access": null,
-    "description": null,
-    "lineNumber": 57,
-    "undocument": true,
-    "type": {
+    "longname": "src/Scene.js~Scene#newEntity",
+    "access": "private",
+    "description": "",
+    "lineNumber": 100,
+    "params": [
+      {
+        "name": "parent",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": null,
+        "defaultValue": "null"
+      }
+    ],
+    "return": {
       "types": [
         "*"
       ]
@@ -3581,28 +3589,43 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "newEntity",
+    "name": "newEntityWithComponents",
     "memberof": "src/Scene.js~Scene",
-    "longname": "src/Scene.js~Scene#newEntity",
-    "access": null,
-    "description": null,
-    "lineNumber": 61,
-    "undocument": true,
+    "longname": "src/Scene.js~Scene#newEntityWithComponents",
+    "access": "private",
+    "description": "Creates a new entity in this scene with comps attached.\n\nnote: DO NOT USE THIS METHOD. Use {@link Scene#newPrefab} instead.  \n(The reason is that dependencies may not be properly loaded on the\nclient when using this method)",
+    "lineNumber": 120,
     "params": [
       {
-        "name": "parent",
-        "optional": true,
+        "nullable": null,
         "types": [
-          "*"
+          "Component#constructor[]"
         ],
+        "spread": false,
+        "optional": false,
+        "name": "comps",
+        "description": "description"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Entity"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "null",
         "defaultRaw": null,
-        "defaultValue": "null"
+        "name": "parent",
+        "description": "The parent entity"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Entity"
+      ],
+      "spread": false,
+      "description": "The instantiated entity"
     },
     "generator": false
   },
@@ -3611,34 +3634,43 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "newEntityWithComponents",
+    "name": "newPrefab",
     "memberof": "src/Scene.js~Scene",
-    "longname": "src/Scene.js~Scene#newEntityWithComponents",
+    "longname": "src/Scene.js~Scene#newPrefab",
     "access": null,
-    "description": null,
-    "lineNumber": 65,
-    "undocument": true,
+    "description": "Instantiate a new prefab in this scene",
+    "lineNumber": 135,
     "params": [
       {
-        "name": "comps",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "prefab",
+        "description": "The prefab to instantiate."
       },
       {
-        "name": "parent",
-        "optional": true,
+        "nullable": null,
         "types": [
-          "*"
+          "Entity"
         ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "null",
         "defaultRaw": null,
-        "defaultValue": "null"
+        "name": "parent",
+        "description": "The parent of the new entity"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "type"
+      ],
+      "spread": false,
+      "description": "The newly created entity"
     },
     "generator": false
   },
@@ -3650,10 +3682,9 @@
     "name": "destroy",
     "memberof": "src/Scene.js~Scene",
     "longname": "src/Scene.js~Scene#destroy",
-    "access": null,
-    "description": null,
-    "lineNumber": 75,
-    "undocument": true,
+    "access": "private",
+    "description": "",
+    "lineNumber": 150,
     "params": [
       {
         "name": "entity",
@@ -4176,7 +4207,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "export default {\n  Component: function(CType) {\n    return CType.name;\n  },\n  isComponent: function(tpe) {\n    return typeof tpe === 'string';\n  },\n  Int: 0,\n  Float: 1,\n  Array: 2,\n  Object: 3,\n  String: 4,\n  Boolean: 5\n};\n"
+    "content": "export default {\n  Component: function(CType) {\n    if (typeof CType !== 'function') throw new Error('Type Component takes a component constructor as parameter');\n    return CType.name;\n  },\n  isComponent: function(tpe) {\n    return typeof tpe === 'string';\n  },\n  Int: 0,\n  Float: 1,\n  Array: 2,\n  Object: 3,\n  String: 4,\n  Boolean: 5\n};\n"
   },
   {
     "__docId__": 214,
@@ -4189,7 +4220,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "import { Log } from '../Log.js';\n\nimport Component from '../Component.js';\nimport Types from '../Types.js';\nimport gd from '../drivers/Graphics.js';\nimport GraphicSystem from '../systems/GraphicSystem.js';\n\nexport default class Camera extends Component {\n\n  onCreate() {\n    this.transform.x = 20;\n    this.transform.y = 50;\n\n    this.createAttribute('backgroundColor', '#fff', Types.String);\n    this.createAttribute('width', 1366, Types.Int);\n    this.createAttribute('height', 768, Types.Int);\n\n    if (gd.available()) {\n      Log.info('Graphics context is available');\n      gd.init();\n    } else {\n      this.disable();\n    }\n  }\n\n  onDestroy() {\n\n  }\n\n  onUpdate() {\n    // Clear the whole surface before painting entities\n    gd.clear(this.backgroundColor);\n\n    gd.ctx.save();\n    // TODO: Center camera\n    gd.ctx.translate(this.width / 2 - this.transform.x, this.height / 2 - this.transform.y);\n\n    // Determine size factor\n    var f = Math.max(gd.width/this.width, gd.height/this.height);\n    gd.ctx.scale(f, f);\n\n    var sprites = this.scene.getSystem(GraphicSystem).sprites;\n    for (const sprite of sprites) {\n      sprite.draw(gd.ctx);\n    }\n    gd.ctx.restore();\n  }\n}\n"
+    "content": "import { Log } from '../Log.js';\n\nimport Component from '../Component.js';\nimport Types from '../Types.js';\nimport gd from '../drivers/Graphics.js';\nimport GraphicSystem from '../systems/GraphicSystem.js';\n\nexport default class Camera extends Component {\n\n  onCreate() {\n    this.createAttribute('backgroundColor', '#fff', Types.String);\n    this.createAttribute('width', 1366, Types.Int);\n    this.createAttribute('height', 768, Types.Int);\n\n    if (gd.available()) {\n      Log.info('Graphics context is available');\n      gd.init();\n    } else {\n      this.disable();\n    }\n  }\n\n  onDestroy() {\n\n  }\n\n  onUpdate() {\n    // Clear the whole surface before painting entities\n    gd.clear(this.backgroundColor);\n\n    gd.ctx.save();\n    // TODO: Center camera\n    gd.ctx.translate(this.width / 2 - this.transform.x, this.height / 2 - this.transform.y);\n\n    // Determine size factor\n    var f = Math.max(gd.width/this.width, gd.height/this.height);\n    gd.ctx.scale(f, f);\n\n    var sprites = this.scene.getSystem(GraphicSystem).sprites;\n    for (const sprite of sprites) {\n      sprite.draw(gd.ctx);\n    }\n    gd.ctx.restore();\n  }\n}\n"
   },
   {
     "__docId__": 215,
@@ -4236,7 +4267,7 @@
     "longname": "src/components/Camera.js~Camera#onDestroy",
     "access": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 23,
     "undocument": true,
     "params": [],
     "generator": false
@@ -4251,7 +4282,7 @@
     "longname": "src/components/Camera.js~Camera#onUpdate",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 27,
     "undocument": true,
     "params": [],
     "generator": false

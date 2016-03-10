@@ -72,6 +72,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Types.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export default {
   Component: function(CType) {
+    if (typeof CType !== &apos;function&apos;) throw new Error(&apos;Type Component takes a component constructor as parameter&apos;);
     return CType.name;
   },
   isComponent: function(tpe) {

@@ -4,7 +4,12 @@
   "index": "README.md",
   "title": "Savannah documentation",
   "access": ["public", "protected", "private"],
+  "coverage": false,
   "manual": {
-    "tutorial": ["./manual/tutorial.md"]
+    "tutorial": [
+      "./manual/tutorial/getting_started.md",
+      "./manual/tutorial/concepts.md"
+    ],
+    "installation": ["./manual/installation.md"]
   }
 }

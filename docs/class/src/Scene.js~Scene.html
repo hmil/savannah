@@ -70,13 +70,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Scene from &apos;<span><a href="file/src/Scene.js.html#lineNumber10">./src/Scene.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Scene from &apos;<span><a href="file/src/Scene.js.html#lineNumber31">./src/Scene.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/Scene.js.html#lineNumber10">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/Scene.js.html#lineNumber31">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -96,11 +96,31 @@
 
   
   
-  
+  <div class="description" data-ice="description"><p>Base class for game scenes.</p>
+<p>A scene allows to isolate different parts of the game. For instance a menu
+could be a scene, a game level can be a scene.</p>
+<p>Entities and components from different scenes cannot interact.</p>
+<p>Most basic games will only require a single scene class.</p>
+<h2 id="usage">Usage</h2>
+<p>Scenes should be created as subclasses of this class in the /scenes folder.
+They should implement <span><a href="class/src/Scene.js~Scene.html#instance-method-onCreate">Scene#onCreate</a></span> to populate themselves with entities.</p>
+</div>
 
   
 
-  
+  <div data-ice="exampleDocs">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">export default class MainScene extends Scene {
+  onCreate() {
+    super.onCreate();
+    this.newPrefab(Camera);
+  }
+}</code></pre>
+    </div>
+</div>
 
   
 
@@ -222,6 +242,87 @@
   </tr>
 </tbody>
 </table>
+<table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Private Members</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">private</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-member-_id">_id</a></span></span><span data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">private</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-member-_model">_model</a></span></span><span data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">private</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-member-_systems">_systems</a></span></span><span data-ice="signature">: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
 </div>
 <div data-ice="methodSummary"><h2>Method Summary</h2><table class="summary" data-ice="summary">
   <thead><tr><td data-ice="title" colspan="3">Public Methods</td></tr></thead>
@@ -239,31 +340,6 @@
       <div>
         <p>
            <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-addSystem">addSystem</a></span></span><span data-ice="signature">(system: <span>*</span>)</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-destroy">destroy</a></span></span><span data-ice="signature">(entity: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -313,6 +389,121 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-newPrefab">newPrefab</a></span></span><span data-ice="signature">(prefab: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, parent: <span><a href="class/src/Entity.js~Entity.html">Entity</a></span>): <span>type</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Instantiate a new prefab in this scene</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+<table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Protected Methods</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">protected</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-onCreate">onCreate</a></span></span><span data-ice="signature">()</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Called upon scene instantiation.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">protected</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-onUpdate">onUpdate</a></span></span><span data-ice="signature">(dt: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Called once per game loop</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+<table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Private Methods</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">private</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-destroy">destroy</a></span></span><span data-ice="signature">(entity: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">private</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-newEntity">newEntity</a></span></span><span data-ice="signature">(parent: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -329,7 +520,7 @@
   </tr>
 <tr data-ice="target">
     <td>
-      <span class="access" data-ice="access">public</span>
+      <span class="access" data-ice="access">private</span>
       
       
       
@@ -338,63 +529,14 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-newEntityWithComponents">newEntityWithComponents</a></span></span><span data-ice="signature">(comps: <span>*</span>, parent: <span>*</span>): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-newEntityWithComponents">newEntityWithComponents</a></span></span><span data-ice="signature">(comps: <span><span><a href="class/src/Component.js~Component.html#instance-constructor-constructor">Component#constructor</a></span><span>[]</span></span>, parent: <span><a href="class/src/Entity.js~Entity.html">Entity</a></span>): <span><a href="class/src/Entity.js~Entity.html">Entity</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-onCreate">onCreate</a></span></span><span data-ice="signature">()</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/src/Scene.js~Scene.html#instance-method-onUpdate">onUpdate</a></span></span><span data-ice="signature">(dt: <span>*</span>)</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
+        <div data-ice="description"><p>Creates a new entity in this scene with comps attached.</p>
+</div>
       </div>
     </td>
     <td>
@@ -423,7 +565,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber12">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber33">source</a></span></span>
     </span>
   </h3>
 
@@ -483,7 +625,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber57">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber93">source</a></span></span>
     </span>
   </h3>
 
@@ -523,7 +665,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber49">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber85">source</a></span></span>
     </span>
   </h3>
 
@@ -563,7 +705,129 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber53">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber89">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<h2 data-ice="title">Private Members</h2>
+
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-_id">
+    <span class="access" data-ice="access">private</span>
+    
+    
+    
+    
+    <span data-ice="name">_id</span><span data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber35">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-_model">
+    <span class="access" data-ice="access">private</span>
+    
+    
+    
+    
+    <span data-ice="name">_model</span><span data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber34">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-_systems">
+    <span class="access" data-ice="access">private</span>
+    
+    
+    
+    
+    <span data-ice="name">_systems</span><span data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber36">source</a></span></span>
     </span>
   </h3>
 
@@ -606,7 +870,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber45">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber81">source</a></span></span>
     </span>
   </h3>
 
@@ -652,62 +916,6 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-destroy">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">destroy</span><span data-ice="signature">(entity: <span>*</span>)</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber75">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">entity</td>
-      <td data-ice="type"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-getSystem">
     <span class="access" data-ice="access">public</span>
     
@@ -718,7 +926,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber36">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber72">source</a></span></span>
     </span>
   </h3>
 
@@ -774,8 +982,246 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-newEntity">
+  <h3 data-ice="anchor" id="instance-method-newPrefab">
     <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">newPrefab</span><span data-ice="signature">(prefab: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, parent: <span><a href="class/src/Entity.js~Entity.html">Entity</a></span>): <span>type</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber135">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Instantiate a new prefab in this scene</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">prefab</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>The prefab to instantiate.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">parent</td>
+      <td data-ice="type"><span><a href="class/src/Entity.js~Entity.html">Entity</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: null</li></ul></td>
+      <td data-ice="description"><p>The parent of the new entity</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span>type</span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>The newly created entity</p>
+</td>
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<h2 data-ice="title">Protected Methods</h2>
+
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-onCreate">
+    <span class="access" data-ice="access">protected</span>
+    
+    
+    
+    
+    <span data-ice="name">onCreate</span><span data-ice="signature">()</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber48">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Called upon scene instantiation.</p>
+<p>Subclasses should override this method and call super.onCreate().</p>
+<p>Default implementation adds a Graphic system to the scene</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-onUpdate">
+    <span class="access" data-ice="access">protected</span>
+    
+    
+    
+    
+    <span data-ice="name">onUpdate</span><span data-ice="signature">(dt: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber58">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Called once per game loop</p>
+<p>Subclasses overriding this method <strong>must</strong> call super.onUpdate(dt)</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">dt</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<h2 data-ice="title">Private Methods</h2>
+
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-destroy">
+    <span class="access" data-ice="access">private</span>
+    
+    
+    
+    
+    <span data-ice="name">destroy</span><span data-ice="signature">(entity: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber150">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">entity</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-newEntity">
+    <span class="access" data-ice="access">private</span>
     
     
     
@@ -784,7 +1230,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber61">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber100">source</a></span></span>
     </span>
   </h3>
 
@@ -842,23 +1288,26 @@
 </div>
 <div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-newEntityWithComponents">
-    <span class="access" data-ice="access">public</span>
+    <span class="access" data-ice="access">private</span>
     
     
     
     
-    <span data-ice="name">newEntityWithComponents</span><span data-ice="signature">(comps: <span>*</span>, parent: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">newEntityWithComponents</span><span data-ice="signature">(comps: <span><span><a href="class/src/Component.js~Component.html#instance-constructor-constructor">Component#constructor</a></span><span>[]</span></span>, parent: <span><a href="class/src/Entity.js~Entity.html">Entity</a></span>): <span><a href="class/src/Entity.js~Entity.html">Entity</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber65">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber120">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Creates a new entity in this scene with comps attached.</p>
+<p>note: DO NOT USE THIS METHOD. Use <span><a href="class/src/Scene.js~Scene.html#instance-method-newPrefab">Scene#newPrefab</a></span> instead.<br>(The reason is that dependencies may not be properly loaded on the
+client when using this method)</p>
+</div>
 
   
 
@@ -872,16 +1321,18 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">comps</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><span><a href="class/src/Component.js~Component.html#instance-constructor-constructor">Component#constructor</a></span><span>[]</span></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>description</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">parent</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="class/src/Entity.js~Entity.html">Entity</a></span></td>
       <td data-ice="appendix"><ul><li>optional</li>
 <li>default: null</li></ul></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The parent entity</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -892,109 +1343,14 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
-        
+        <td class="return-type" data-ice="returnType"><span><a href="class/src/Entity.js~Entity.html">Entity</a></span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>The instantiated entity</p>
+</td>
       </tr>
     </table>
     <div data-ice="returnProperties">
 </div>
   </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-onCreate">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">onCreate</span><span data-ice="signature">()</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber18">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-onUpdate">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">onUpdate</span><span data-ice="signature">(dt: <span>*</span>)</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Scene.js.html#lineNumber22">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">dt</td>
-      <td data-ice="type"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  
 
   
 
