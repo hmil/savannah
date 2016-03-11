@@ -5,13 +5,15 @@ you plan to do with Savannah.
 
 ## Node.js
 
-First, install nodejs.  Go to https://nodejs.org/en/download/ and choose the package matching 
-your operating system.
+Savannah runs on nodejs v4.4  
+**Important:** nodejs v5.0 is not supported! Download the "4.x.x LTS" version!
 
-**note for Ubuntu users**: You must install nodejs through nvm. It's the only reasonnable way to install nodejs on Ubuntu.  
-First install nvm as described in the [installation](https://github.com/creationix/nvm#install-script)
-section. Then run:  
-`nvm install 5.0` to install nodejs v5.0 through nvm  
+Go to https://nodejs.org/en/download/ and choose the LTS package matching your operating system.
+
+**note for Ubuntu users**: You must install nodejs using nvm. It's the only reasonnable way to install nodejs on Ubuntu.  
+First install nvm as described in the [nvm documentation](https://github.com/creationix/nvm#install-script).
+Then run:  
+`nvm install 5.0` to install nodejs v5.0 using nvm  
 `nvm use 5.0` to use nodejs v5.0  
 _note_: You might need to run `nvm use 5.0` each time you launch a new shell to
 tell nvm you are using nodejs version 5.0.
@@ -27,14 +29,16 @@ interface).
 
 ## Savannah
 
-node.js and git are the only prerequisites to Savannah. From there, all steps are common
+node.js is the only prerequisites to Savannah. From there, all steps are common
 no matter your operating system.
 
-In your working directory, clone the Savannah repository  
-`git clone https://github.com/hmil/savannah.git`  
-( or `git clone git@github.com/hmil.savannah.git` if you have setup ssh keys with github)
+As long as the project is in prerelease, you will have to install it manually as described below:
+In your working directory, clone the Savannah repository:  
+- If you are using git: `git clone git@github.com/hmil.savannah.git`
+- Otherwise click this [download link](https://github.com/hmil/savannah/archive/master.zip) and extract
+savannah to a folder called `savannah`
 
-Then install the module _via_ npm:  
+Then install the module with npm:  
 `npm install -g ./savannah/savannah-cli`
 
 ## Editor

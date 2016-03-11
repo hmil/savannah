@@ -24,9 +24,11 @@ export default class Bullet extends Component {
       // If it collided with the wall:
 
       // destroy the bullet...
+      // TUTORIAL: remove the next line
       this.destroy();
 
       // ...or make it bounce like crazy!
+      // TUTORIAL: uncomment the lines below
       // if (evt.vx !== 0) {
       //   this.physics.vx = -this.physics.vx;
       // } else if (evt.vy !== 0) {
