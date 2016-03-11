@@ -9,8 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "es6-module-loader": "^0.17.11",
-    "grunt": "^0.4.5",
-    "savannah-server": "0.0.1-SNAPSHOT",
+    "savannah-server": "^0.0.1-SNAPSHOT",
     "traceur": "0.0.102"
   }
 }

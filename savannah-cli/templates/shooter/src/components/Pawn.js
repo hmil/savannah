@@ -2,6 +2,8 @@ import Component from 'core/Component.js';
 import Types from 'core/Types.js';
 import RPC from 'core/RPC.js';
 import Input from 'core/components/Input.js';
+// TUTORIAL: you will need this import
+// import Camera from 'core/components/Camera.js';
 import { Keycodes } from 'core/Keycodes.js';
 
 import BulletComp from 'components/Bullet.js';
@@ -20,11 +22,13 @@ export default class Pawn extends Component {
     this.lastFire = 0;
 
     this.createAttribute('lives', 3, Types.Int);
-
+    
+    // TUTORIAL: uncomment this line...
     // this.getComponent(Camera).backgroundColor = '#000';
 
     if (game.playerId != this.entity.parent.id) {
       this.getComponent(Input).disable();
+      // TUTORIAL: ...and that one too.
       // this.getComponent(Camera).disable();
     }
   }
