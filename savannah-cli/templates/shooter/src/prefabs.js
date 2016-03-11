@@ -21,6 +21,7 @@ export const Pawn = [
   { comp: PawnComp },
   { comp: RawSprite },
   { comp: Input },
+  // { comp: CameraComp },
   {
     comp: Physics,
     attrs: {
