@@ -53,7 +53,7 @@ src/
 
 Let's break it down:
 - __components/__ contains most of your game's logic bundled as [components](https://hmil.github.io/savannah/docs/class/src/Component.js~Component.html)
-  as described in the [components](https://hmil.github.io/savannah/docs/manual/tutorial.html#entity-component-model) concepts section.
+  as described in the [components](https://hmil.github.io/savannah/docs/manual/usage.html#entity-component-model) concepts section.
 - __core/__ contains the core Savannah library. The core library has a [dedicated documentation](https://hmil.github.io/savannah/docs/identifiers.html)
 - __scenes/__ contains all of your game's [scenes](https://hmil.github.io/savannah/docs/class/src/Scene.js~Scene.html)
 - __Client.js__ is the entry point for the game when launched on a client
@@ -149,4 +149,4 @@ following:
 - The source of [Pawn.js](https://github.com/hmil/savannah/blob/master/savannah-cli/templates/shooter/src/components/Pawn.js)
   and [Player.js](https://github.com/hmil/savannah/blob/master/savannah-cli/templates/shooter/src/components/Player.js)
   in the example project to get an idea of how the notion of a _player_ is handled in the demo game. (bonus: find out how to respawn after you died!) 
-- The [concepts](https://hmil.github.io/savannah/docs/manual/tutorial.html#concepts) documentation page which covers in more depth fundamental concepts of the Savannah framework.
+- The [concepts](https://hmil.github.io/savannah/docs/manual/usage.html#concepts) documentation page which covers in more depth fundamental concepts of the Savannah framework.

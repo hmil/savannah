@@ -7,9 +7,9 @@
   "coverage": false,
   "manual": {
     "tutorial": [
-      "./manual/tutorial/getting_started.md",
-      "./manual/tutorial/concepts.md"
+      "./manual/tutorial/getting_started.md"
     ],
+    "usage": ["./manual/concepts.md"],
     "installation": ["./manual/installation.md"]
   }
 }
