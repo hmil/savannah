@@ -52,7 +52,7 @@
 <li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#experiment" data-ice="link">Experiment</a></li>
 <li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#bouncing-bullets" data-ice="link">Bouncing bullets</a></li>
 <li data-ice="manualNav" class="indent-h3"><span class="manual-dot"></span><a href="manual/tutorial.html#fps-camera" data-ice="link">FPS camera</a></li>
-<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#what-s-next" data-ice="link">What&apos;s next</a></li>
+<li data-ice="manualNav" class="indent-h2"><span class="manual-dot"></span><a href="manual/tutorial.html#what-next-" data-ice="link">What next?</a></li>
 </ul>
   </div>
 <div data-ice="manual" data-toc-name="usage">
@@ -92,10 +92,10 @@
 <p>This page describes how to install Savannah. This is a prerequisite for anything
 you plan to do with Savannah.</p>
 <h2 id="node-js">Node.js</h2>
-<p>First, install nodejs.  Go to <a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a> and choose the package matching 
-your operating system.</p>
-<p><strong>note for Ubuntu users</strong>: You must install nodejs through nvm. It&apos;s the only reasonnable way to install nodejs on Ubuntu.<br>First install nvm as described in the <a href="https://github.com/creationix/nvm#install-script">installation</a>
-section. Then run:<br><code>nvm install 5.0</code> to install nodejs v5.0 through nvm<br><code>nvm use 5.0</code> to use nodejs v5.0<br><em>note</em>: You might need to run <code>nvm use 5.0</code> each time you launch a new shell to
+<p>Savannah runs on nodejs v4.4<br><strong>Important:</strong> nodejs v5.0 is not supported! Download the &quot;4.x.x LTS&quot; version!</p>
+<p>Go to <a href="https://nodejs.org/en/download/">https://nodejs.org/en/download/</a> and choose the LTS package matching your operating system.</p>
+<p><strong>note for Ubuntu users</strong>: You must install nodejs using nvm. It&apos;s the only reasonnable way to install nodejs on Ubuntu.<br>First install nvm as described in the <a href="https://github.com/creationix/nvm#install-script">nvm documentation</a>.
+Then run:<br><code>nvm install 5.0</code> to install nodejs v5.0 using nvm<br><code>nvm use 5.0</code> to use nodejs v5.0<br><em>note</em>: You might need to run <code>nvm use 5.0</code> each time you launch a new shell to
 tell nvm you are using nodejs version 5.0.</p>
 <h2 id="git">git</h2>
 <p>This step is only necessary while the project is in prerelease phase: There is no
@@ -103,10 +103,16 @@ stable branch at the moment so you must install the package from the sources.<br
 <p>To get the sources, first <a href="https://git-scm.com/downloads">install git</a> (be sure to download the cli-tool, not the graphical
 interface).</p>
 <h2 id="savannah">Savannah</h2>
-<p>node.js and git are the only prerequisites to Savannah. From there, all steps are common
+<p>node.js is the only prerequisites to Savannah. From there, all steps are common
 no matter your operating system.</p>
-<p>In your working directory, clone the Savannah repository<br><code>git clone https://github.com/hmil/savannah.git</code><br>( or <code>git clone git@github.com/hmil.savannah.git</code> if you have setup ssh keys with github)</p>
-<p>Then install the module <em>via</em> npm:<br><code>npm install -g ./savannah/savannah-cli</code></p>
+<p>As long as the project is in prerelease, you will have to install it manually as described below:
+In your working directory, clone the Savannah repository:  </p>
+<ul>
+<li>If you are using git: <code>git clone git@github.com/hmil.savannah.git</code></li>
+<li>Otherwise click this <a href="https://github.com/hmil/savannah/archive/master.zip">download link</a> and extract
+savannah to a folder called <code>savannah</code></li>
+</ul>
+<p>Then install the module with npm:<br><code>npm install -g ./savannah/savannah-cli</code></p>
 <h2 id="editor">Editor</h2>
 <p>While you can use any decent code editor to edit Savannah projects, the only officially
 supported setup is the following:</p>
