@@ -12,6 +12,7 @@ import PawnComp from 'components/Pawn.js';
 
 
 export const Player = [
+  { comp: Transform },
   { comp: PlayerComp },
   { comp: Input }
 ];

@@ -22,11 +22,12 @@ export default class Pawn extends Component {
     this.lastFire = 0;
 
     this.createAttribute('lives', 3, Types.Int);
-    
+
     // TUTORIAL: uncomment this line...
     // this.getComponent(Camera).backgroundColor = '#000';
 
-    if (game.playerId != this.entity.parent.id) {
+    // TODO: this is ugly
+    if (game.playerId != this.transform.parent.entity.id) {
       this.getComponent(Input).disable();
       // TUTORIAL: ...and that one too.
       // this.getComponent(Camera).disable();

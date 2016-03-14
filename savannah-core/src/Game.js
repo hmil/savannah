@@ -9,6 +9,7 @@ class Game {
     this._scenes = {};
     this._activeScenes = {};
     this._components = {};
+    this.isMaster = false;
     this._timer = new Timer((dt) => this.update(dt));
     this.playerId = null;
 
@@ -45,8 +46,11 @@ class Game {
       throw new Error(`Scene ${name} is not registered. Use game.registerScene() before loading a scene`);
     }
     Log.info(`Creating scene ${name}`);
-    var scene = new this._scenes[name](id);
+    const scene = new this._scenes[name](id);
     this._activeScenes[scene.id] = scene;
+
+    const scEnt = scene.newEntity(scene.id);
+    scEnt.addComponentInstance(scene);
     scene.onCreate();
     return scene;
   }
@@ -78,7 +82,17 @@ class Game {
 
   update(dt) {
     for (let i of Object.keys(this._activeScenes)) {
-      this._activeScenes[i].onUpdate(dt);
+      const currScene = this._activeScenes[i];
+      currScene.update(dt);
+      const newSceneRef = currScene.getFreshRef();
+      // TODO: this is so shitty, handle this differently
+      if (newSceneRef != currScene) {
+        newSceneRef._systems.length = 0;
+        for (let sys of currScene._systems) {
+          newSceneRef._systems.push(sys);
+        }
+        this._activeScenes[i] = newSceneRef;
+      }
     }
   }
 

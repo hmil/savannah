@@ -7,35 +7,12 @@ export default class Entity {
   constructor(scene, id = null) {
     this._components = {};
     this._scene = scene;
-    this._parent = null;
-    this._parentId = null;
     this._id = (id !== null) ? id : uid();
     this._compIdCounter = 0;
     this._isSynchronized = true;
     this._transform = null;
     this._handlers = {};
     this._destroyed = false;
-  }
-
-  get parent() {
-    if (this._parent == null) {
-      this._parent = this.scene.model.getEntity(this._parentId);
-    }
-    return this._parent;
-  }
-
-  set parent(arg) {
-    if (typeof arg === 'string') {
-      this._parent = null;
-      this._parentId = arg;
-    } else if (arg !== null && typeof arg === 'object') {
-      var entity = arg.entity || entity; // Links to entity even if component is passed
-      this._parent = arg;
-      this._parentId = arg.id;
-    } else {
-      this._parent = null;
-      this._parentId = null;
-    }
   }
 
   get id() {
@@ -82,17 +59,25 @@ export default class Entity {
     }
   }
 
-  addComponent(Comp, id = null) {
-    var comp_id = (id == null) ? uid() : id;
-    var comp = new Comp(this, comp_id);
-    this._components[comp_id] = comp;
+  /**
+   *  @private
+   */
+  addComponentInstance(comp) {
+    this._components[comp.id] = comp;
+    comp.entity = this;
     this._registerComponentHandlers(comp);
 
     // Special case optimization for extremely common components
-    if (Comp.name === 'Transform') {
+    if (comp.constructor.name === 'Transform') {
       this._transform = comp;
     }
     return comp;
+  }
+
+  addComponent(Comp, id = null) {
+    var comp_id = (id == null) ? uid() : id;
+    var comp = new Comp(comp_id);
+    return this.addComponentInstance(comp);
   }
 
   addComponents(Comps) {
@@ -141,18 +126,21 @@ export default class Entity {
         return comp;
       }
     }
+    return null;
+  }
+
+  hasComponent(Type) {
+    return this.getComponent(Type) != null;
   }
 
   onCreate() {
     for (let i of Object.keys(this._components)) {
-      const component = this._components[i];
       this._components[i].onCreate();
     }
   }
 
   onDestroy() {
     for (let i of Object.keys(this._components)) {
-      const component = this._components[i];
       this._components[i].onDestroy();
     }
   }

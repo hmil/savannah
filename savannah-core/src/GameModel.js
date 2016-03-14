@@ -48,7 +48,6 @@ export default class GameModel {
         };
       }
       snap[ent.id] = {
-        parent: (ent.parent == null) ? null : ent.parent.id,
         comps: serialized
       };
     }
@@ -90,8 +89,6 @@ export default class GameModel {
 
       this._entities[i] = entity;
 
-      entity.parent = snap[i].parent;
-
       // Recycle existing components and purge those which disappeared
       for (const comp_id of Object.keys(components)) {
         if (comp_id in snap_components) {
@@ -126,7 +123,11 @@ export default class GameModel {
 
     // Remove other entities
     for (const i of Object.keys(oldEntities)) {
-      oldEntities[i].onDestroy();
+      if (oldEntities[i].isSynchronized) {
+        oldEntities[i].onDestroy();
+      } else {
+        this._entities[i] = oldEntities[i];
+      }
     }
   }
 
