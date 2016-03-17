@@ -1,0 +1,30 @@
+{
+  "name": "savannah",
+  "version": "0.0.1",
+  "description": "Meta repository for the Savannah game engine",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hmil/savannah.git"
+  },
+  "keywords": [
+    "game",
+    "engine",
+    "node",
+    "html5",
+    "canvas"
+  ],
+  "author": "hmil",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hmil/savannah/issues"
+  },
+  "homepage": "https://github.com/hmil/savannah#readme"
+}

@@ -1,15 +1,17 @@
 {
-  "source": "savannah-core/src",
-  "destination": "./docs",
-  "index": "README.md",
-  "title": "Savannah documentation",
   "access": ["public", "protected", "private"],
   "coverage": false,
+  "destination": "./docs",
+  "index": "README.md",
   "manual": {
     "tutorial": [
       "./manual/tutorial/getting_started.md"
     ],
     "usage": ["./manual/concepts.md"],
     "installation": ["./manual/installation.md"]
-  }
+  },
+  "package": "package.json",
+  "source": "savannah-core/src/core",
+  "title": "Savannah documentation"
+
 }
