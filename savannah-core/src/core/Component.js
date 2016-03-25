@@ -1,12 +1,15 @@
 import Collection  from './Collection.js';
-import { Log } from './Log.js';
 import Types  from './Types.js';
 
 const EVENT_RX = /^on[A-Z].*/;
 
 class Component {
   constructor(id) {
+    /**
+     * @type {Entity}
+     */
     this.entity = null;
+
     this._id = id;
     this._enabled = true;
     this._eventHandlers = {};

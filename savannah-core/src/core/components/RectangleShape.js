@@ -7,6 +7,9 @@ import Shape from './Shape.js';
  *
  * The drawn rectangle has its top-left corner at `transform` coordinates and
  * spans `width` units horizontally and `height` vertically.
+ *
+ * @member {number} width Width of the rectangle
+ * @member {number} height Height of the rectangle
  */
 export default class RectangleShape extends Shape {
 
@@ -15,7 +18,6 @@ export default class RectangleShape extends Shape {
     this.createAttribute('width', 10, Types.Float);
     this.createAttribute('height', 10, Types.Float);
   }
-
 
   /**
    * Traces a rectangle shape

@@ -1,9 +1,9 @@
-import Entity from './Entity.js';
-import GameModel from './GameModel.js';
-import { uid } from './utils.js';
+import Component  from './Component.js';
+import Entity  from './Entity.js';
+import GameModel  from './GameModel.js';
 import { Log } from './Log.js';
-import GraphicSystem from './systems/GraphicSystem.js';
-import Component from './Component.js';
+import GraphicSystem  from './systems/GraphicSystem.js';
+import { uid } from './utils.js';
 
 
 /**
@@ -96,9 +96,6 @@ export default class Scene extends Component {
     return this._model.entities;
   }
 
-  /**
-   * @private
-   */
   newEntity(id = null) {
     const entity = new Entity(this, id);
     this._model.addEntity(entity);
@@ -113,7 +110,6 @@ export default class Scene extends Component {
    * (The reason is that dependencies may not be properly loaded on the
    * client when using this method)
    *
-   * @private
    * @param  {Component#constructor[]} comps         description
    * @param  {Entity} [parent=null] The parent entity
    * @return {Entity} The instantiated entity
@@ -151,9 +147,7 @@ export default class Scene extends Component {
     return entity;
   }
 
-  /**
-   * @private
-   */
+
   destroy(entity) {
     entity.onDestroy();
     this._model.removeEntity(entity);

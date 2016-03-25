@@ -5,7 +5,9 @@ import Shape from './Shape.js';
 /**
  * Circle shape sprite.
  *
- * The circle is centered around `transform` coordinates
+ * The circle is centered around `transform` coordinates.
+ *
+ * @member {number} radius Circle radius.
  */
 export default class CircleShape extends Shape {
   onCreate() {

@@ -5,7 +5,10 @@ import GraphicSystem from '../systems/GraphicSystem.js';
 /**
  * Base class for all graphic components.
  *
- * Components extending Sprite should implement {@link Sprite#draw} to draw something
+ * When an entity with a Sprite component is in a scene, the draw method of the sprite component
+ * will be called once per game loop to render the sprite to the graphics rendering context.
+ *
+ * Components extending Sprite should implement {@link draw} to draw something
  * to screen.
  */
 export default class Sprite extends Component {
@@ -44,6 +47,9 @@ export default class Sprite extends Component {
    *
    * note: The screen is typically refreshed 60 times a second which means that this method will
    * be invoked a lot. You must make sure that no heavy computation happens in here.
+   *
+   * @param {CanvasRenderingContext2D} ctx The output
+   *   [CanvasRenderingContext2D](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
    */
-  draw(ctx) {}
+   draw(ctx) {} // jshint unused: false
 }

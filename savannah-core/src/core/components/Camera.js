@@ -17,10 +17,9 @@ export default class Camera extends Component {
     this._graphicSystem = this.scene.getSystem(GraphicSystem);
 
 
-    if (gd.available()) {
-      Log.info('Graphics context is available');
-      gd.init();
-    } else {
+    gd.init();
+    if (!gd.available()) {
+      Log.info('Canvas not supported: graphics will be disabled.');
       this.disable();
     }
   }

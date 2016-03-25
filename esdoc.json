@@ -1,5 +1,5 @@
 {
-  "access": ["public", "protected", "private"],
+  "access": ["public", "protected"],
   "coverage": false,
   "destination": "./docs",
   "index": "README.md",
@@ -10,6 +10,9 @@
     "usage": ["./manual/concepts.md"],
     "installation": ["./manual/installation.md"]
   },
+  "plugins": [
+    {"name": "esdoc-savannah-plugin"}
+  ],
   "package": "package.json",
   "source": "savannah-core/src/core",
   "title": "Savannah documentation"

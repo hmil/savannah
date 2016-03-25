@@ -1,17 +1,15 @@
-import Component from 'core/Component.js';
-import Types from 'core/Types.js';
-import Input from 'core/components/Input.js';
-import game from 'core/Game.js';
+import Component  from 'core/Component.js';
+import game  from 'core/Game.js';
 import { Keycodes } from 'core/Keycodes.js';
-import RPC from 'core/RPC.js';
+import RPC  from 'core/RPC.js';
+import Types  from 'core/Types.js';
+import Input  from 'core/components/Input.js';
 import { Pawn } from 'prefabs.js';
-
-import PawnComp from 'components/Pawn.js';
 
 export default class Player extends Component {
 
   onCreate() {
-    this.createAttribute('pawn', null, Types.Component(PawnComp));
+    this.createAttribute('pawn', null, Types.Component);
 
     if (game.playerId != this.entity.id) {
       this.getComponent(Input).disable();

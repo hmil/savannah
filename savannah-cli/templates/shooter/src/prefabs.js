@@ -1,10 +1,10 @@
 import Transform from 'core/components/Transform.js';
-import RawSprite from 'core/components/RawSprite.js';
 import Physics from 'core/components/Physics.js';
 import Input from 'core/components/Input.js';
 import RectangleShape from 'core/components/RectangleShape.js';
 import CircleShape from 'core/components/CircleShape.js';
 import CameraComp from 'core/components/Camera.js';
+import DrawEvent from 'core/components/DrawEvent.js';
 
 import PlayerComp from 'components/Player.js';
 import BulletComp from 'components/Bullet.js';
@@ -20,7 +20,7 @@ export const Player = [
 export const Pawn = [
   { comp: Transform },
   { comp: PawnComp },
-  { comp: RawSprite },
+  { comp: DrawEvent },
   { comp: Input },
   // { comp: CameraComp },
   {

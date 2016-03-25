@@ -26,16 +26,10 @@ class Graphics {
   // Returns true if graphic rendering is available on this platform
   available() {
     if (typeof document === 'undefined' || typeof window === 'undefined') {
-      Log.info('No document or window available: graphics will be disabled.');
       return false;
     }
     if (this._isCanvasSupported === undefined) {
       this._isCanvasSupported = this._determineCanvasSupported();
-      if (this._isCanvasSupported) {
-        Log.info('Canvas is supported :)');
-      } else {
-        Log.info('Canvas not supported: graphics will be disabled.');
-      }
     }
     return this._isCanvasSupported;
   }
@@ -44,13 +38,15 @@ class Graphics {
     if (this._initialized === true) {
       return;
     }
+    this._initialized = true;
+
+    if (this.available() === false) {
+      return;
+    }
 
     this._makeCanvas();
     this._addCSSRules(CSS_RULEZ);
     window.addEventListener('resize', () => this.updateCanvasSize());
-
-
-    this._initialized = true;
   }
 
   get height() {
